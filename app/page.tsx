@@ -4,7 +4,7 @@ import Footer from "components/layout/footer";
 
 export const metadata = {
   description:
-    "High-performance ecommerce store built with Next.js, Vercel, and Shopify.",
+    "WebAR puzzles & AR apparel with built-in image tracking. Scan to unlock 3D augmented reality experiences. No app required. Powered by 8th Wall.",
   openGraph: {
     type: "website",
   },

@@ -27,7 +27,7 @@ export function Gallery({
     imageIndex === 0 ? images.length - 1 : imageIndex - 1;
 
   const buttonClassName =
-    "h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center";
+    "h-full px-6 cursor-pointer transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center";
 
   return (
     <form>
@@ -76,7 +76,7 @@ export function Gallery({
                 <button
                   formAction={() => updateImage(index.toString())}
                   aria-label="Select product image"
-                  className="h-full w-full"
+                  className="h-full w-full cursor-pointer"
                 >
                   <GridTileImage
                     alt={image.altText}

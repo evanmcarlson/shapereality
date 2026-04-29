@@ -46,7 +46,7 @@ function SubmitButton({
     <button
       aria-label="Add to cart"
       className={clsx(buttonClasses, {
-        "hover:opacity-90": true,
+        "cursor-pointer hover:opacity-90": true,
       })}
     >
       <div className="absolute left-0 ml-4">
