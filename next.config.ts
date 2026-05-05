@@ -22,14 +22,7 @@ export default {
       },
     ])
 
-    return [
-      ...rules,
-      {
-        source: "/go/uncharted",
-        destination: "https://ar.shapereality.com/uncharted",
-        permanent: false, // 307 - keeps it updatable
-      },
-    ];
+    return [...rules];
   },
   experimental: {
     ppr: true,
