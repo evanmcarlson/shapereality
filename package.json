@@ -9,6 +9,8 @@
     "test": "pnpm prettier:check"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1043.0",
+    "@aws-sdk/lib-dynamodb": "^3.1043.0",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "clsx": "^2.1.1",
