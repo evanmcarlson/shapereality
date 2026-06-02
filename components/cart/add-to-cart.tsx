@@ -12,9 +12,11 @@ import { useCart } from "./cart-context";
 function SubmitButton({
   availableForSale,
   selectedVariantId,
+  onBuyNow,
 }: {
   availableForSale: boolean;
   selectedVariantId: string | undefined;
+  onBuyNow: () => void;
 }) {
   const addToCartClasses =
     "relative flex w-full items-center justify-center rounded-full border border-current bg-transparent p-4 tracking-wide uppercase";
@@ -63,6 +65,7 @@ function SubmitButton({
       </button>
       <button
         aria-label="Buy it now"
+        onClick={onBuyNow}
         formAction={() => buyNow(selectedVariantId)}
         className={clsx(buyNowClasses, "cursor-pointer hover:opacity-90")}
       >
@@ -113,6 +116,22 @@ export function AddToCart({ product }: { product: Product }) {
       <SubmitButton
         availableForSale={availableForSale}
         selectedVariantId={selectedVariantId}
+        onBuyNow={() => {
+          if (!finalVariant) return;
+          trackEvent("begin_checkout", {
+            currency: finalVariant.price.currencyCode,
+            value: parseFloat(finalVariant.price.amount),
+            items: [
+              {
+                item_id: product.id,
+                item_name: product.title,
+                item_variant: finalVariant.id,
+                price: parseFloat(finalVariant.price.amount),
+                quantity: 1,
+              },
+            ],
+          });
+        }}
       />
       <p aria-live="polite" className="sr-only" role="status">
         {message}
