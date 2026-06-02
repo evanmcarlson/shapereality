@@ -3,6 +3,7 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { addItem, buyNow } from "components/cart/actions";
+import { trackEvent } from "lib/analytics";
 import { Product, ProductVariant } from "lib/shopify/types";
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
@@ -92,6 +93,19 @@ export function AddToCart({ product }: { product: Product }) {
   return (
     <form
       action={async () => {
+        trackEvent("add_to_cart", {
+          currency: finalVariant.price.currencyCode,
+          value: parseFloat(finalVariant.price.amount),
+          items: [
+            {
+              item_id: product.id,
+              item_name: product.title,
+              item_variant: finalVariant.id,
+              price: parseFloat(finalVariant.price.amount),
+              quantity: 1,
+            },
+          ],
+        });
         addCartItem(finalVariant, product);
         addItemAction();
       }}

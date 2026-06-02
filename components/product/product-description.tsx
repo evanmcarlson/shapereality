@@ -1,4 +1,5 @@
 import { AddToCart } from "components/cart/add-to-cart";
+import { ViewItemTracker } from "components/analytics/view-item-tracker";
 import { PaymentBadges } from "components/product/payment-badges";
 import Price from "components/price";
 import Prose from "components/prose";
@@ -24,6 +25,7 @@ export function ProductDescription({ product }: { product: Product }) {
           html={product.descriptionHtml}
         />
       ) : null}
+      <ViewItemTracker product={product} />
       <AddToCart product={product} />
       <PaymentBadges />
     </>

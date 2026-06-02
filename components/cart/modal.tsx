@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { trackEvent } from "lib/analytics";
 import { createCartAndSetCookie, redirectToCheckout } from "./actions";
 import { useCart } from "./cart-context";
 import { DeleteItemButton } from "./delete-item-button";
@@ -215,7 +216,24 @@ export default function CartModal() {
                       />
                     </div>
                   </div>
-                  <form action={redirectToCheckout}>
+                  <form
+                    action={redirectToCheckout}
+                    onSubmit={() => {
+                      trackEvent("begin_checkout", {
+                        currency: cart.cost.totalAmount.currencyCode,
+                        value: parseFloat(cart.cost.totalAmount.amount),
+                        items: cart.lines.map((item) => ({
+                          item_id: item.merchandise.product.id,
+                          item_name: item.merchandise.product.title,
+                          item_variant: item.merchandise.id,
+                          price:
+                            parseFloat(item.cost.totalAmount.amount) /
+                            item.quantity,
+                          quantity: item.quantity,
+                        })),
+                      });
+                    }}
+                  >
                     <CheckoutButton />
                   </form>
                 </div>
