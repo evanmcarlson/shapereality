@@ -5,6 +5,7 @@ export default {
       'shapereality.net',
       'shapereality.org',
       'shapereality.xyz',
+      'weshapereality.com'
     ]
 
     const rules = domains.flatMap((domain) => [
