@@ -1,20 +1,17 @@
-import Image from 'next/image'
 import Link from 'next/link'
+import { HeroScene } from 'components/hero-scene'
 
 export function Hero() {
   return (
-    <section className="relative h-screen bg-black">
-      <Image
-        src="/hero.png"
-        alt="Shape Reality"
-        fill
-        className="object-contain"
-        priority
-      />
-      <div className="absolute bottom-16 w-full flex justify-center">
+    <section className="relative h-screen bg-black overflow-hidden">
+      {/* 3D layer */}
+      <HeroScene />
+
+      {/* 2D overlay */}
+      <div className="relative z-10 flex h-full flex-col items-center justify-end pb-16 pointer-events-none">
         <Link
           href="/product/uncharted"
-          className="font-mono text-sm uppercase tracking-widest text-white hover:opacity-60 transition-opacity"
+          className="pointer-events-auto font-mono text-sm uppercase tracking-widest text-white hover:opacity-60 transition-opacity"
         >
           [your ticket to the unknown]
         </Link>
