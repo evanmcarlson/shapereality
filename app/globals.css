@@ -13,9 +13,14 @@
   }
 }
 
+:root {
+  --logo-invert: 1;
+}
+
 @media (prefers-color-scheme: dark) {
-  html {
+  :root {
     color-scheme: dark;
+    --logo-invert: 0;
   }
 }
 

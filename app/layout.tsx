@@ -1,6 +1,7 @@
 import { CartProvider } from "components/cart/cart-context";
 import { Navbar } from "components/layout/navbar";
-import { GeistSans } from "geist/font/sans";
+import { NavbarWrapper } from "components/layout/navbar/navbar-wrapper";
+import { GeistMono } from "geist/font/mono";
 import { getCart } from "lib/shopify";
 import { baseUrl } from "lib/utils";
 import { ReactNode } from "react";
@@ -31,10 +32,12 @@ export default async function RootLayout({
   const cart = getCart();
 
   return (
-    <html lang="en" className={GeistSans.variable}>
-      <body className="relative bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
+    <html lang="en" className={GeistMono.variable}>
+      <body className="relative bg-neutral-50 text-black selection:bg-black selection:text-white dark:bg-neutral-900 dark:text-white dark:selection:bg-white dark:selection:text-black font-mono uppercase">
         <CartProvider cartPromise={cart}>
-          <Navbar />
+          <NavbarWrapper>
+            <Navbar />
+          </NavbarWrapper>
           <main>
             {children}
             <Toaster closeButton />

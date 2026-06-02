@@ -1,17 +1,26 @@
+// import { HeroScene } from 'components/hero-scene'
+import Image from 'next/image'
 import Link from 'next/link'
-import { HeroScene } from 'components/hero-scene'
 
 export function Hero() {
   return (
-    <section className="relative h-screen bg-black overflow-hidden">
-      {/* 3D layer */}
-      <HeroScene />
+    <section className="relative h-screen overflow-hidden">
+      {/* 3D layer — disabled for load performance; re-enable HeroScene import above to restore */}
+      {/* <HeroScene /> */}
 
-      {/* 2D overlay */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-end pb-16 pointer-events-none">
+      <div className="relative z-10 flex h-full flex-col items-center py-16 pointer-events-none">
+        <div className="@container flex w-full max-w-120 flex-col gap-2 px-4">
+          <Image src="/wordmark.png" alt="Shape Reality" width={384} height={42} className="w-full" style={{ filter: 'invert(var(--logo-invert))' }} />
+          <span className="font-mono text-[clamp(8px,2.75cqi,14px)] uppercase tracking-widest text-black dark:text-white whitespace-nowrap">
+            Copyright © Shape Reality, LLC • All Rights Reserved
+          </span>
+        </div>
+
+        <div className="flex-1" />
+
         <Link
           href="/product/uncharted"
-          className="pointer-events-auto font-mono text-sm uppercase tracking-widest text-white hover:opacity-60 transition-opacity"
+          className="pointer-events-auto block w-full max-w-120 px-4 text-center font-mono text-l uppercase tracking-widest text-black dark:text-white transition-opacity hover:opacity-60"
         >
           [your ticket to the unknown]
         </Link>
