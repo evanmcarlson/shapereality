@@ -7,6 +7,7 @@ import { baseUrl } from "lib/utils";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 import "./globals.css";
 
 const { SITE_NAME } = process.env;
@@ -44,6 +45,18 @@ export default async function RootLayout({
           </main>
         </CartProvider>
         <Analytics />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-GLQ8LDZFDD"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-GLQ8LDZFDD');
+          `}
+        </Script>
       </body>
     </html>
   );
