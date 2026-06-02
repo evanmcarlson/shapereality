@@ -1,4 +1,5 @@
 import { GridTileImage } from "components/grid/tile";
+import { ScrollingBanner } from "components/scrolling-wordmark";
 import { getCollectionProducts } from "lib/shopify";
 import type { Product } from "lib/shopify/types";
 import Link from "next/link";
@@ -58,12 +59,15 @@ export async function ThreeItemGrid() {
   const [firstProduct, secondProduct, thirdProduct] = homepageItems;
 
   return (
-    <div className="md:flex md:h-screen md:items-center">
+    <>
+      <ScrollingBanner src="/immersive-puzzles.png" alt="Immersive Puzzles" width={2717} height={224} />
+      <div className="md:flex md:h-screen md:items-center">
       <section className="mx-auto grid w-full max-w-(--breakpoint-2xl) gap-4 px-4 py-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
         <ThreeItemGridItem size="full" item={firstProduct} priority={true} />
         <ThreeItemGridItem size="half" item={secondProduct} priority={true} />
         <ThreeItemGridItem size="half" item={thirdProduct} />
       </section>
-    </div>
+      </div>
+    </>
   );
 }

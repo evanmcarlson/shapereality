@@ -1,7 +1,12 @@
-import { Carousel } from "components/carousel";
-import { ThreeItemGrid } from "components/grid/three-items";
 import { Hero } from "components/hero";
-import Footer from "components/layout/footer";
+// import Footer from "components/layout/footer";
+
+// Kept for use elsewhere:
+// import { HeroScrollSection } from "components/hero-scroll-section";
+// import { TicketSection } from "components/ticket-section";
+// import { CTASection } from "components/cta-section";
+// import { Carousel } from "components/carousel";
+// import { ThreeItemGrid } from "components/grid/three-items";
 
 export const metadata = {
   description:
@@ -15,9 +20,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <ThreeItemGrid />
-      <Carousel />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }
