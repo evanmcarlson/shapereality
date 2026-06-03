@@ -147,12 +147,6 @@ export function AddToCart({ product }: { product: Product }) {
             ],
           });
 
-          trackMetaEvent("InitiateCheckout", {
-            content_ids: [product.id],
-            num_items: 1,
-            value: price,
-            currency,
-          });
         }}
       />
       <p aria-live="polite" className="sr-only" role="status">

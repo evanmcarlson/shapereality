@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { trackGAEvent, trackMetaEvent } from "lib/analytics";
+import { trackGAEvent } from "lib/analytics";
 import { createCartAndSetCookie, redirectToCheckout } from "./actions";
 import { useCart } from "./cart-context";
 import { DeleteItemButton } from "./delete-item-button";
@@ -236,17 +236,6 @@ export default function CartModal() {
                         })),
                       });
 
-                      trackMetaEvent("InitiateCheckout", {
-                        content_ids: cart.lines.map(
-                          (item) => item.merchandise.product.id,
-                        ),
-                        num_items: cart.lines.reduce(
-                          (sum, item) => sum + item.quantity,
-                          0,
-                        ),
-                        value,
-                        currency,
-                      });
                     }}
                   >
                     <CheckoutButton />
