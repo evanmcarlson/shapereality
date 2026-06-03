@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "components/hero";
-// import Footer from "components/layout/footer";
+import Footer from "components/layout/footer";
 
 // Kept for use elsewhere:
 // import { HeroScrollSection } from "components/hero-scroll-section";
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <>
+    <div className="flex h-screen flex-col overflow-hidden">
       <Hero />
-      {/* <Footer /> */}
-    </>
+      <Footer />
+    </div>
   );
 }

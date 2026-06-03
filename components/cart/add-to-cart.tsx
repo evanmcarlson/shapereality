@@ -34,7 +34,7 @@ function SubmitButton({
 
   if (!selectedVariantId) {
     return (
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <button
           aria-label="Please select an option"
           disabled
@@ -43,7 +43,7 @@ function SubmitButton({
           <div className="absolute left-0 ml-4">
             <PlusIcon className="h-5" />
           </div>
-          Add To Cart
+          Add To Bag
         </button>
         <button disabled className={clsx(buyNowClasses, disabledClasses)}>
           Buy It Now
@@ -53,15 +53,15 @@ function SubmitButton({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <button
-        aria-label="Add to cart"
+        aria-label="Add to bag"
         className={clsx(addToCartClasses, "cursor-pointer hover:opacity-60")}
       >
         <div className="absolute left-0 ml-4">
           <PlusIcon className="h-5" />
         </div>
-        Add To Cart
+        Add To Bag
       </button>
       <button
         aria-label="Buy it now"

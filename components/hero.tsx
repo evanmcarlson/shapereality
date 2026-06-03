@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export function Hero() {
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative flex-1 min-h-0 overflow-hidden">
       {/* 3D layer — disabled for load performance; re-enable HeroScene import above to restore */}
       {/* <HeroScene /> */}
 
@@ -16,14 +16,14 @@ export function Hero() {
           </span>
         </div>
 
-        <div className="flex-1" />
-
-        <Link
-          href="/product/uncharted"
-          className="pointer-events-auto block w-full max-w-120 px-4 text-center font-mono text-l uppercase tracking-widest text-black dark:text-white transition-opacity hover:opacity-60"
-        >
-          [your ticket to the unknown]
-        </Link>
+        <div className="flex-1 flex items-center justify-center w-full">
+          <Link
+            href="/product/uncharted"
+            className="pointer-events-auto block w-full max-w-120 px-4 text-center font-mono text-l uppercase tracking-widest text-black dark:text-white transition-opacity hover:opacity-60"
+          >
+            [your ticket to the unknown]
+          </Link>
+        </div>
       </div>
     </section>
   )

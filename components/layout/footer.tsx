@@ -31,7 +31,7 @@ export default async function Footer() {
 
       </div> */}
       <div className="py-6 text-sm">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 min-[1320px]:px-0">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:justify-center md:gap-0 md:px-4 min-[1320px]:px-0">
           <div className="flex md:flex-row">
             <p>
               <a href="https://shapereality.com/shipping">Shipping & Returns</a>
