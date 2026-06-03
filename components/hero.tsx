@@ -1,6 +1,7 @@
 // import { HeroScene } from 'components/hero-scene'
 import Image from 'next/image'
 import Link from 'next/link'
+import { NewsletterForm } from 'components/newsletter-form'
 
 export function Hero() {
   return (
@@ -14,6 +15,9 @@ export function Hero() {
           <span className="font-mono text-[clamp(8px,2.75cqi,14px)] uppercase tracking-widest text-black dark:text-white whitespace-nowrap">
             Copyright © Shape Reality, LLC • All Rights Reserved
           </span>
+          <div className="pointer-events-auto mt-4">
+            <NewsletterForm />
+          </div>
         </div>
 
         <div className="flex-1 flex items-center justify-center w-full">
