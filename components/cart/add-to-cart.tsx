@@ -3,7 +3,7 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { addItem, buyNow } from "components/cart/actions";
-import { trackEvent } from "lib/analytics";
+import { trackGAEvent, trackMetaEvent } from "lib/analytics";
 import { Product, ProductVariant } from "lib/shopify/types";
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
@@ -96,19 +96,31 @@ export function AddToCart({ product }: { product: Product }) {
   return (
     <form
       action={async () => {
-        trackEvent("add_to_cart", {
-          currency: finalVariant.price.currencyCode,
-          value: parseFloat(finalVariant.price.amount),
+        const price = parseFloat(finalVariant.price.amount);
+        const currency = finalVariant.price.currencyCode;
+
+        trackGAEvent("add_to_cart", {
+          currency,
+          value: price,
           items: [
             {
               item_id: product.id,
               item_name: product.title,
               item_variant: finalVariant.id,
-              price: parseFloat(finalVariant.price.amount),
+              price,
               quantity: 1,
             },
           ],
         });
+
+        trackMetaEvent("AddToCart", {
+          content_ids: [product.id],
+          content_type: "product",
+          content_name: product.title,
+          value: price,
+          currency,
+        });
+
         addCartItem(finalVariant, product);
         addItemAction();
       }}
@@ -118,18 +130,28 @@ export function AddToCart({ product }: { product: Product }) {
         selectedVariantId={selectedVariantId}
         onBuyNow={() => {
           if (!finalVariant) return;
-          trackEvent("begin_checkout", {
-            currency: finalVariant.price.currencyCode,
-            value: parseFloat(finalVariant.price.amount),
+          const price = parseFloat(finalVariant.price.amount);
+          const currency = finalVariant.price.currencyCode;
+
+          trackGAEvent("begin_checkout", {
+            currency,
+            value: price,
             items: [
               {
                 item_id: product.id,
                 item_name: product.title,
                 item_variant: finalVariant.id,
-                price: parseFloat(finalVariant.price.amount),
+                price,
                 quantity: 1,
               },
             ],
+          });
+
+          trackMetaEvent("InitiateCheckout", {
+            content_ids: [product.id],
+            num_items: 1,
+            value: price,
+            currency,
           });
         }}
       />
