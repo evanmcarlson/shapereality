@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-general-sans), sans-serif;
+}
+
+@theme {
+  --font-sans: var(--font-general-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
 @plugin "@tailwindcss/container-queries";
 @plugin "@tailwindcss/typography";
 

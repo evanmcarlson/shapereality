@@ -25,7 +25,7 @@ export function DeleteItemButton({
     >
       <button
         type="submit"
-        aria-label="Remove cart item"
+        aria-label="Remove bag item"
         className="flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-full bg-neutral-500"
       >
         <XMarkIcon className="mx-[1px] h-4 w-4 text-white dark:text-black" />

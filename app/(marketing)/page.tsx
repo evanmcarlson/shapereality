@@ -11,9 +11,12 @@ import Footer from "components/layout/footer";
 
 export const metadata: Metadata = {
   description:
-    "WebAR puzzles & AR apparel with built-in image tracking. Scan to unlock 3D augmented reality experiences. No app required. Powered by 8th Wall.",
+    "Shape Reality creates competitive puzzle games that combine physical jigsaw puzzles, timed completions, global leaderboards, and hidden AR experiences.",
   openGraph: {
     type: "website",
+    title: "Shape Reality | Competitive Jigsaw Puzzle Games",
+    description:
+      "Shape Reality creates competitive puzzle games that combine physical jigsaw puzzles, timed completions, global leaderboards, and hidden AR experiences.",
   },
   other: {
     "facebook-domain-verification": "xuzr5hg47f0ub5k59e2jti2oewntrq",
@@ -22,9 +25,9 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
+    <>
       <Hero />
       <Footer />
-    </div>
+    </>
   );
 }
