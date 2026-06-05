@@ -53,7 +53,7 @@ export function Hero() {
             </Link>
             <a
               href="#leaderboard"
-              className="block rounded-2xl text-center border border-neutral-200 dark:border-neutral-700 font-sans font-medium text-sm uppercase tracking-widest px-6 py-4 text-white transition-opacity hover:opacity-80"
+              className="block rounded-2xl text-center border border-neutral-200 dark:border-neutral-700 font-sans font-medium text-sm uppercase tracking-widest px-6 py-4 text-black dark:text-white transition-opacity hover:opacity-80"
             >
               Leaderboard
             </a>
@@ -78,11 +78,11 @@ export function Hero() {
       <section className="border-t border-black/10 px-4 py-24 dark:border-white/10">
         <div className="mx-auto w-full max-w-md">
           <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-black opacity-40 dark:text-white">
-            How to Play
+            Start Here
           </p>
           <h2 className="mb-12 font-sans text-[clamp(28px,8vw,44px)] font-bold uppercase leading-[1.0] tracking-tight">
             <span className="bg-black text-white dark:bg-white dark:text-black [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
-              It starts with a puzzle.
+              How to play.
             </span>
           </h2>
 
@@ -103,27 +103,6 @@ export function Hero() {
         </div>
       </section>
 
-      {/* ── CAN YOU BEAT THE CLOCK ───────────────── */}
-      <section className="border-t border-black/10 px-4 py-24 dark:border-white/10">
-        <div className="mx-auto w-full max-w-md flex flex-col gap-6">
-          <p className="font-mono text-[11px] uppercase tracking-widest" style={{ color: '#ff383b' }}>
-            Can you beat the clock?
-          </p>
-          <h2 className="font-sans text-[clamp(28px,8vw,44px)] font-bold uppercase leading-[1.0] tracking-tight text-black dark:text-white">
-            Every second counts.
-          </h2>
-          <p className="font-sans text-sm leading-relaxed text-black opacity-50 dark:text-white">
-            Can you beat the clock? Every completion is recorded. Every player has a ranking.
-          </p>
-          <a
-            href="#leaderboard"
-            className="font-mono text-[11px] uppercase tracking-widest transition-opacity hover:opacity-70"
-            style={{ color: '#0088ff' }}
-          >
-            View Leaderboard →
-          </a>
-        </div>
-      </section>
 
       {/* ── LEADERBOARD ──────────────────────────── */}
       <section
