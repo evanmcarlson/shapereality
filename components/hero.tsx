@@ -6,8 +6,10 @@ import {
   TrophyIcon,
 } from '@heroicons/react/24/outline'
 import { NewsletterForm } from 'components/newsletter-form'
+import { Leaderboard } from 'components/leaderboard'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 const HOW_TO_PLAY = [
   { n: 1, Icon: ArchiveBoxIcon, verb: 'Receive', desc: 'Get your puzzle and the zine.' },
@@ -114,34 +116,13 @@ export function Hero() {
             Global Leaderboard
           </h2>
 
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-black/10 dark:border-white/10">
-                <th className="pb-3 text-left font-mono text-[9px] uppercase tracking-widest text-black opacity-30 dark:text-white">
-                  Rank
-                </th>
-                <th className="pb-3 text-left font-mono text-[9px] uppercase tracking-widest text-black opacity-30 dark:text-white">
-                  Player
-                </th>
-                <th className="pb-3 text-right font-mono text-[9px] uppercase tracking-widest text-black opacity-30 dark:text-white">
-                  Puzzle
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="pb-3 pt-5 font-mono text-base font-bold" style={{ color: '#ffcc00' }}>
-                  1
-                </td>
-                <td className="pb-3 pt-5 font-sans text-sm font-medium uppercase text-black dark:text-white">
-                  Evan
-                </td>
-                <td className="pb-3 pt-5 text-right font-mono text-sm text-black opacity-60 dark:text-white">
-                  00:42:11
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <Suspense fallback={
+            <p className="pt-8 text-center font-mono text-[11px] uppercase tracking-widest text-black opacity-30 dark:text-white">
+              Loading…
+            </p>
+          }>
+            <Leaderboard puzzleId="uncharted" />
+          </Suspense>
         </div>
       </section>
 

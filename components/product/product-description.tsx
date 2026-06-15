@@ -1,7 +1,7 @@
 import { AddToCart } from "components/cart/add-to-cart";
 import { ViewItemTracker } from "components/analytics/view-item-tracker";
 import { PaymentBadges } from "components/product/payment-badges";
-import { EyeIcon, PuzzlePieceIcon, TrophyIcon, UserIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PuzzlePieceIcon, TruckIcon, UserIcon } from "@heroicons/react/24/outline";
 import Price from "components/price";
 import Prose from "components/prose";
 import { Product } from "lib/shopify/types";
@@ -30,7 +30,7 @@ export function ProductDescription({ product }: { product: Product }) {
         {[
           { Icon: UserIcon, label: 'Solo\nChallenge' },
           { Icon: PuzzlePieceIcon, label: '120\nPieces' },
-          { Icon: TrophyIcon, label: 'Leader-\nboards' },
+          { Icon: TruckIcon, label: 'Free\nShipping' },
           { Icon: EyeIcon, label: 'Hidden\nExperience' },
         ].map(({ Icon, label }) => (
           <div key={label} className="flex flex-col items-center gap-2 text-center">
