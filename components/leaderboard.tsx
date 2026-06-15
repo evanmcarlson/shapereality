@@ -83,7 +83,7 @@ export async function Leaderboard({ puzzleId }: { puzzleId: string }) {
     {hasMore && (
       <a
         href={`https://play.shapereality.com/?puzzle=${puzzleId}`}
-        className="mt-6 text-center font-mono text-[10px] uppercase tracking-widest transition-opacity hover:opacity-70"
+        className="mt-6 block text-center font-mono text-[12px] uppercase tracking-widest transition-opacity hover:opacity-70"
         style={{ color: '#0088ff' }}
       >
         See full leaderboard →

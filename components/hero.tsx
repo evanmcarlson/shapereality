@@ -84,7 +84,7 @@ export function Hero() {
           </p>
           <h2 className="mb-12 font-sans text-[clamp(28px,8vw,44px)] font-bold uppercase leading-[1.0] tracking-tight">
             <span className="bg-black text-white dark:bg-white dark:text-black [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
-              How to play.
+              How to play
             </span>
           </h2>
 
@@ -102,6 +102,13 @@ export function Hero() {
               </div>
             ))}
           </div>
+          <a
+            href="/product/uncharted"
+            className="mt-6 block text-center font-mono text-[12px] uppercase tracking-widest transition-opacity hover:opacity-70"
+            style={{ color: '#0088ff' }}
+          >
+            Claim yours now →
+          </a>
         </div>
       </section>
 
@@ -112,8 +119,13 @@ export function Hero() {
         className="scroll-mt-16 border-t border-black/10 px-4 py-24 dark:border-white/10"
       >
         <div className="mx-auto w-full max-w-md">
-          <h2 className="mb-10 text-center font-mono text-[11px] uppercase tracking-widest text-black opacity-40 dark:text-white">
-            Global Leaderboard
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-black opacity-40 dark:text-white">
+            Rankings
+          </p>
+          <h2 className="mb-12 font-sans text-[clamp(28px,8vw,44px)] font-bold uppercase leading-[1.0] tracking-tight">
+            <span className="bg-black text-white dark:bg-white dark:text-black [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
+              Leaderboard
+            </span>
           </h2>
 
           <Suspense fallback={
