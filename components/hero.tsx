@@ -133,8 +133,11 @@ export function Hero() {
               Loading…
             </p>
           }>
-            <Leaderboard puzzleId="uncharted" />
+            <Leaderboard puzzleId="uncharted-launch-2025" />
           </Suspense>
+          <p className="mt-6 font-mono text-[10px] uppercase tracking-widest text-black opacity-30 dark:text-white">
+            Original Uncharted Launch Event&nbsp;&nbsp;·&nbsp;&nbsp;April 2025&nbsp;&nbsp;·&nbsp;&nbsp;35 completions
+          </p>
         </div>
       </section>
 
