@@ -27,7 +27,7 @@ export default {
   },
   experimental: {
     ppr: true,
-    inlineCss: true,
+    // inlineCss: true, // disabled — conflicts with next/font in production
     useCache: true,
   },
   images: {
