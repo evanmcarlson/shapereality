@@ -27,6 +27,104 @@ html {
   --logo-invert: 1;
 }
 
+/* ── Studio homepage (always-dark, self-contained) ─────────────── */
+
+@property --lens-x {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+@property --lens-y {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 40%;
+}
+
+.studio-holo-text {
+  background: linear-gradient(
+    100deg,
+    #8ec5ff 0%,
+    #c09bff 32%,
+    #ffb3e2 62%,
+    #9ff0d8 100%
+  );
+  background-size: 180% 180%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: studio-holo-pan 9s ease-in-out infinite alternate;
+}
+
+@keyframes studio-holo-pan {
+  from {
+    background-position: 0% 30%;
+  }
+  to {
+    background-position: 100% 70%;
+  }
+}
+
+/* Capability rows: title picks up the hologram on row hover */
+.studio-layer-row:hover .studio-holo-hover {
+  background: linear-gradient(
+    100deg,
+    #8ec5ff 0%,
+    #c09bff 32%,
+    #ffb3e2 62%,
+    #9ff0d8 100%
+  );
+  background-size: 180% 180%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: studio-holo-pan 9s ease-in-out infinite alternate;
+}
+
+/* The AR lens: reveals the holographic layer beneath the solid headline */
+.studio-lens-layer {
+  -webkit-mask-image: radial-gradient(
+    circle clamp(90px, 14vw, 180px) at var(--lens-x) var(--lens-y),
+    black 55%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle clamp(90px, 14vw, 180px) at var(--lens-x) var(--lens-y),
+    black 55%,
+    transparent 100%
+  );
+}
+
+/* Touch / no-hover devices: the lens sweeps on its own */
+@media (hover: none) {
+  .studio-lens-auto .studio-lens-layer {
+    animation: studio-lens-drift 14s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes studio-lens-drift {
+  0% {
+    --lens-x: 15%;
+    --lens-y: 20%;
+  }
+  50% {
+    --lens-x: 80%;
+    --lens-y: 55%;
+  }
+  100% {
+    --lens-x: 30%;
+    --lens-y: 85%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-holo-text {
+    animation: none;
+  }
+  .studio-lens-auto .studio-lens-layer {
+    animation: none;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;

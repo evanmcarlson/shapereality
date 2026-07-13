@@ -6,7 +6,8 @@ import MobileMenu from "./mobile-menu";
 
 const navItems = [
   { title: "Home", path: "/" },
-  { title: "Leaderboard", path: "/#leaderboard" },
+  { title: "Uncharted", path: "/uncharted" },
+  { title: "Leaderboard", path: "/uncharted#leaderboard" },
 ];
 
 export async function Navbar() {
@@ -31,7 +32,11 @@ export async function Navbar() {
               alt="Shape Reality"
               width={120}
               height={14}
-              style={{ width: "auto", height: "34px", filter: "invert(var(--logo-invert))" }}
+              style={{
+                width: "auto",
+                height: "34px",
+                filter: "invert(var(--logo-invert))",
+              }}
             />
           </Link>
         </div>
