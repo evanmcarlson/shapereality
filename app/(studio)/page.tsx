@@ -1,34 +1,42 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ReelVideo } from "components/studio-site/reel-video";
+import { TheShape } from "components/studio-site/the-shape";
+import { Ticker } from "components/studio-site/ticker";
+import { WorkReel, type ReelItem } from "components/studio-site/work-reel";
+import { NewsletterForm } from "components/newsletter-form";
 
 const BRIEF = "mailto:evan@shapereality.com?subject=Project%20brief";
+const VTO_SPRINT =
+  "mailto:evan@shapereality.com?subject=Try-on%20feasibility%20sprint";
 
 export const metadata: Metadata = {
   description:
-    "Browser-based AR that tracks humans. Custom body, face, and virtual try-on experiences for agencies and brands, built by a former 8th Wall engineer. No app download.",
+    "Virtual try-on and body-tracked AR that runs in the browser. Makeup, eyewear, earrings, watches — plus full-body effects — built on our own tracking engine by a former 8th Wall engineer. No app download.",
   openGraph: {
     type: "website",
     title: "Shape Reality — Browser-Based AR That Tracks Humans",
     description:
-      "Custom body, face, and virtual try-on experiences for agencies and brands, built by a former 8th Wall engineer. No app download.",
+      "Virtual try-on and body-tracked AR in the browser: face, true ear anchors, wrists, full body. Built and maintained by a former 8th Wall engineer.",
   },
   other: {
     "facebook-domain-verification": "xuzr5hg47f0ub5k59e2jti2oewntrq",
   },
 };
 
-// Everything a first-time buyer reads on this page answers one of four
-// questions, in order: what can you build → why trust you → can I see it →
-// what's a sensible first step. (Brand Foundations §11, the 20-second test.)
+// Ten sections, three grounds (paper / ink / cobalt), two live moments (the
+// Shape in the hero and the closer). Every block still answers the
+// 20-second test: what can you build → why trust you → can I see it →
+// what's a sensible first step. (Brand Foundations §11 + v2.5 amendment.)
 
 const PROOF_STRIP = [
   "5 years building at 8th Wall / Niantic",
-  "Body, face + ear tracking systems",
+  "Body, face + ear tracking — our own engine",
   "No app download — it's the browser",
-  "Three.js · WebGL · MediaPipe · 8th Wall",
+  "We stay on after launch — ongoing dev support",
 ];
 
+// The wedge offers below the try-on flagship. VTO leads the page now, so
+// these rows carry the rest of the bench.
 const SERVICES = [
   {
     name: "Body-tracked campaigns",
@@ -37,13 +45,8 @@ const SERVICES = [
   },
   {
     name: "Face & accessory AR",
-    desc: "Face filters, eyewear and headwear try-on, iris effects — and true ear anchoring for earrings and earbuds, beyond the standard face mask.",
+    desc: "Face filters, headwear, iris effects — and true ear anchoring for earrings and earbuds, beyond the standard face mask.",
     href: "/webar-face-filters",
-  },
-  {
-    name: "Virtual try-on pilots",
-    desc: "Feasibility sprints, wrist and jewelry pilots, and ecommerce embeds — scoped honestly, proven on real devices before production.",
-    href: BRIEF,
   },
   {
     name: "8th Wall migration",
@@ -53,10 +56,8 @@ const SERVICES = [
 ];
 
 // The reel: clips captured live via the Studio's record button, dropped in
-// /public/body/. Add more by dropping a file there and adding a row below —
-// White Serpent and Cloak & Chains aren't captured yet, so they're left out
-// rather than shown as empty slabs.
-const REEL = [
+// /public/body/. Add one by dropping a file there and adding a row here.
+const BODY_REEL: ReelItem[] = [
   {
     name: "Tangle",
     note: "a particle stream orbiting the torso",
@@ -94,8 +95,17 @@ const REEL = [
   },
 ];
 
-// Reality Engine, in buyer language — what it buys the client, not how it's
-// architected. It's the delivery advantage, never a separate buying decision.
+// Face effects reel — placeholders on purpose until each demo is captured.
+// Same workflow as the body reel: mp4 into /public/face/, add the src here.
+const FACE_REEL: ReelItem[] = [
+  { name: "Eyewear", note: "frames anchored to the face mesh" },
+  { name: "Earrings", note: "true ear anchors — lobe, helix, canal" },
+  { name: "Makeup", note: "lips, liner, shadow — rendered live" },
+  { name: "Glass Mask", note: "the house material, on a face" },
+];
+
+// Reality Engine, in buyer language — the delivery advantage, never a
+// separate buying decision.
 const ENGINE = [
   {
     label: "Stable anchors, not landmarks",
@@ -103,7 +113,7 @@ const ENGINE = [
   },
   {
     label: "Believable by default",
-    desc: "Person occlusion, room-light estimation, and a refraction/reflection material kit. Effects pass behind people and pick up the room — they belong to the scene.",
+    desc: "Person occlusion, room-light estimation, and a real refraction/reflection material system. Effects pass behind people and pick up the room — they belong to the scene.",
   },
   {
     label: "Yours to keep",
@@ -125,7 +135,7 @@ const PROCESS = [
   {
     n: "03",
     label: "Launch & maintain",
-    desc: "Deployment, browser and device updates, and measurement — WebAR that keeps running after the campaign ships.",
+    desc: "We stay on as your AR dev team — browser and device updates, performance monitoring, new effects on the same anchors. WebAR that keeps running after the campaign ships.",
   },
 ];
 
@@ -155,78 +165,105 @@ const WORK = [
   },
 ];
 
+// Try-on tiles: placeholder slabs until each demo is captured (mp4s land in
+// /public/vto/ and get a src just like the reels).
+const VTO_TILES = [
+  {
+    name: "Face",
+    items: "Makeup · Eyewear · Headwear",
+    tag: "Rendered on the face mesh",
+  },
+  {
+    name: "Ear",
+    items: "Earrings · Earbuds",
+    tag: "True ear anchors — lobe, helix, canal",
+  },
+  {
+    name: "Wrist",
+    items: "Watches · Jewelry",
+    tag: "Pilot program",
+  },
+];
+
 export default function StudioHome() {
   return (
     <main>
-      {/* ── HERO — a brand lockup, not an advertising headline.
-           Hierarchy: identity → category → point of view. The media column
-           is the "unicorn slot": real captured work for now, hero video
-           (then the WebGL bubble) later. ── */}
+      {/* ── 01 · HERO — the lockup and the Shape ─────────────────────────
+           The brand lockup (identity → category → point of view) sharing
+           the viewport with the live signature object. The canvas spans
+           the whole hero but is pointer-transparent; the object is placed
+           over the anchor block and overlaps the headline, refracting the
+           actual DOM type through real per-channel refraction. ── */}
       <section className="relative flex min-h-[100svh] flex-col overflow-hidden px-5 pb-8 pt-10 md:pt-14">
-        <div className="grid flex-1 gap-x-10 gap-y-10 md:grid-cols-[1.15fr_1fr]">
+        <div className="grid flex-1 gap-x-0 gap-y-10 md:grid-cols-[1.05fr_1fr]">
           {/* type column */}
           <div className="flex flex-col">
-            <h1 className="text-[clamp(72px,15vw,200px)] font-bold uppercase leading-[0.8] tracking-tight">
+            <h1
+              id="hero-headline"
+              className="relative whitespace-nowrap text-[clamp(72px,15vw,210px)] font-bold uppercase leading-[0.8] tracking-tight"
+            >
               Shape
               <br />
               Reality
             </h1>
-            <div className="mt-8">
+            <div className="mt-8 flex items-center gap-5">
               <p className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
                 Spatial Studio · San Francisco · Est. &apos;25
+              </p>
+              <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--cobalt)]" />
+                Available — Q3 2026
               </p>
             </div>
             {/* the point of view, pinned to the bottom of the column */}
             <div className="mt-auto flex flex-wrap items-end justify-between gap-x-10 gap-y-8 pt-16">
-              <div>
-                <p className="max-w-[26ch] text-[clamp(20px,3.4vw,40px)] font-bold uppercase leading-[1.05] tracking-tight text-white">
-                  We build interactive experiences across people, products &
-                  places.
-                </p>
-              </div>
+              <p className="max-w-[26ch] text-[clamp(20px,3.4vw,40px)] font-bold uppercase leading-[1.05] tracking-tight">
+                We build interactive experiences across people, products &
+                places.
+              </p>
               <a
-                href="#proof"
-                aria-label="Enter the work"
+                href="#work"
+                aria-label="See the work"
                 className="grid h-28 w-28 shrink-0 place-items-center rounded-full border border-[var(--ink)] text-center font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] transition-colors hover:bg-[var(--ink)] hover:text-[var(--paper)]"
               >
-                Enter
+                See
                 <br />
                 the work ↓
               </a>
             </div>
           </div>
-          {/* media column — real work, not a render. Swap for the hero
-              video (or the WebGL bubble) when one exists. */}
-          <div className="relative hidden overflow-hidden bg-[var(--mist)] md:block">
-            <ReelVideo
-              src="/body/studio-effect-refraction.mp4"
-              className="absolute inset-0 h-full w-full object-cover"
+          {/* the Shape's slot — receives the drag (the canvas above it is
+              pointer-transparent) and extends into the headline on desktop
+              so the glass visibly bends the letterforms */}
+          <div className="relative md:-ml-20">
+            <div
+              id="hero-anchor"
+              aria-hidden="true"
+              className="mx-auto aspect-square w-[76vw] max-w-[420px] md:absolute md:inset-x-0 md:top-1/2 md:mx-0 md:w-auto md:max-w-none md:-translate-y-1/2"
             />
-            <span className="bk absolute bottom-4 left-4 z-10 font-mono text-[10px] uppercase tracking-[0.14em] mix-blend-difference text-white">
-              Crystal — live in the browser
-            </span>
+            {/* the one true glass surface in the UI: a CTA refracting the
+                live canvas behind it via backdrop-filter — not a gradient */}
+            <a
+              href={BRIEF}
+              className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-[rgba(127,127,127,0.35)] bg-[rgba(255,255,255,0.1)] px-7 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.14em] shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] backdrop-blur-xl backdrop-saturate-150 transition-transform hover:scale-[1.04] md:bottom-16"
+            >
+              Start a project
+            </a>
           </div>
         </div>
-        {/* mobile media slab — type first, work second (reference order) */}
-        <div className="relative mt-10 aspect-[3/4] w-full overflow-hidden bg-[var(--mist)] md:hidden">
-          <ReelVideo
-            src="/body/studio-effect-refraction.mp4"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <span className="bk absolute bottom-4 left-4 z-10 font-mono text-[10px] uppercase tracking-[0.14em] mix-blend-difference text-white">
-            Crystal — live in the browser
-          </span>
-        </div>
+        <TheShape
+          variant="glass"
+          anchorId="hero-anchor"
+          refractTargetId="hero-headline"
+          className="absolute inset-0 z-10 h-full w-full"
+          label="A morphing liquid-glass form refracting the Shape Reality wordmark"
+        />
       </section>
 
-      {/* ── CATEGORY STRIP — the bracketed label, full width ── */}
-      <section className="border-t border-[var(--hairline)] px-5 py-5">
-        <p className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
-          WebAR / Interactive 3D / Creative technology
-        </p>
-      </section>
+      {/* ── 02 · CAPABILITY TICKER ── */}
+      <Ticker />
 
-      {/* ── PROOF STRIP — why trust us, in one glance ── */}
+      {/* ── 03 · PROOF STRIP — why trust us, in one glance ── */}
       <section className="border-t border-[var(--hairline)]">
         <div className="grid grid-cols-2 gap-px bg-[var(--hairline)] md:grid-cols-4">
           {PROOF_STRIP.map((p) => (
@@ -239,47 +276,81 @@ export default function StudioHome() {
         </div>
       </section>
 
-      {/* ── SERVICES — the four offers, bold rows, film on hover ── */}
-      <section id="services" className="border-t border-[var(--hairline)]">
-        {SERVICES.map((s) =>
-          s.href.startsWith("/") ? (
-            <Link
-              key={s.name}
-              href={s.href}
-              className="film-parent group grid gap-3 border-b border-[var(--hairline)] px-5 py-10 md:grid-cols-[1.2fr_1fr] md:items-baseline"
+      {/* ── 04 · TRY-ON — the flagship offer, first cobalt slab ── */}
+      <section id="tryon" className="bg-[var(--cobalt)] px-5 py-20 text-white">
+        <p className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-white/70">
+          Virtual try-on
+        </p>
+        <h2 className="mt-4 max-w-[12ch] text-[clamp(40px,8vw,110px)] font-bold uppercase leading-[0.85] tracking-tight">
+          Try-on, in the browser.
+        </h2>
+        <p className="mt-6 max-w-[52ch] text-[15px] leading-relaxed text-white/80">
+          Makeup, eyewear, earrings, watches — anchored to real anatomy, in
+          metric 3D, on the shopper&apos;s own phone. One tap from the product
+          page. No app between them and the purchase.
+        </p>
+        <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {VTO_TILES.map((t, i) => (
+            <div
+              key={t.name}
+              className="relative aspect-[9/12] overflow-hidden border border-white/25 sm:aspect-[9/14]"
             >
-              <h3 className="text-[clamp(30px,6vw,72px)] font-bold uppercase leading-[0.9] tracking-tight">
-                <span className="film-hover">{s.name}</span>
-              </h3>
-              <div>
-                <p className="max-w-[52ch] text-[14px] leading-relaxed text-[var(--muted)]">
-                  {s.desc}
+              <span className="absolute left-3 top-3 h-4 w-4 border-l border-t border-white/50" />
+              <span className="absolute right-3 top-3 h-4 w-4 border-r border-t border-white/50" />
+              <span className="absolute bottom-3 left-3 h-4 w-4 border-b border-l border-white/50" />
+              <span className="absolute bottom-3 right-3 h-4 w-4 border-b border-r border-white/50" />
+              <span className="bk absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.14em] text-white/70">
+                {String(i + 1).padStart(2, "0")} — demo in capture
+              </span>
+              <div className="absolute inset-x-0 bottom-0 p-5">
+                <p className="text-[clamp(28px,3.4vw,44px)] font-bold uppercase leading-[0.9] tracking-tight">
+                  {t.name}
                 </p>
-                <span className="mt-3 inline-block font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)] transition-colors group-hover:text-[var(--ink)]">
-                  More <span aria-hidden="true">→</span>
-                </span>
-              </div>
-            </Link>
-          ) : (
-            <a
-              key={s.name}
-              href={s.href}
-              className="film-parent group grid gap-3 border-b border-[var(--hairline)] px-5 py-10 md:grid-cols-[1.2fr_1fr] md:items-baseline"
-            >
-              <h3 className="text-[clamp(30px,6vw,72px)] font-bold uppercase leading-[0.9] tracking-tight">
-                <span className="film-hover">{s.name}</span>
-              </h3>
-              <div>
-                <p className="max-w-[52ch] text-[14px] leading-relaxed text-[var(--muted)]">
-                  {s.desc}
+                <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-white/80">
+                  {t.items}
                 </p>
-                <span className="mt-3 inline-block font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)] transition-colors group-hover:text-[var(--ink)]">
-                  Start the conversation <span aria-hidden="true">→</span>
-                </span>
+                <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/50">
+                  {t.tag}
+                </p>
               </div>
-            </a>
-          ),
-        )}
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 flex flex-wrap items-center gap-6">
+          <a
+            href={VTO_SPRINT}
+            className="rounded-full border border-white px-7 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.14em] transition-colors hover:bg-white hover:text-[var(--cobalt)]"
+          >
+            Book a try-on feasibility sprint
+          </a>
+          <p className="max-w-[40ch] font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-white/60">
+            Wrist try-on ships as a pilot until our tracking benchmark passes.
+            We don&apos;t overpromise.
+          </p>
+        </div>
+      </section>
+
+      {/* ── 05 · THE REST OF THE BENCH — wedge offers, bold rows ── */}
+      <section id="services">
+        {SERVICES.map((s) => (
+          <Link
+            key={s.name}
+            href={s.href}
+            className="film-parent group grid gap-3 border-b border-[var(--hairline)] px-5 py-10 md:grid-cols-[1.2fr_1fr] md:items-baseline"
+          >
+            <h3 className="text-[clamp(30px,6vw,72px)] font-bold uppercase leading-[0.9] tracking-tight">
+              <span className="film-hover">{s.name}</span>
+            </h3>
+            <div>
+              <p className="max-w-[52ch] text-[14px] leading-relaxed text-[var(--muted)]">
+                {s.desc}
+              </p>
+              <span className="mt-3 inline-block font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)] transition-colors group-hover:text-[var(--ink)]">
+                More <span aria-hidden="true">→</span>
+              </span>
+            </div>
+          </Link>
+        ))}
         <p className="px-5 py-6 text-[14px] text-[var(--muted)]">
           Agency production team?{" "}
           <Link
@@ -291,80 +362,56 @@ export default function StudioHome() {
         </p>
       </section>
 
-      {/* ── LIVE PROOF — the reel, portrait slabs, scroll-snap ── */}
-      <section id="proof" className="border-t border-[var(--hairline)] py-14">
-        <div className="mb-8 flex items-baseline justify-between px-5">
-          <h2 className="text-[clamp(28px,5vw,56px)] font-bold uppercase leading-[0.9] tracking-tight">
-            Live proof
-          </h2>
-          <span className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
-            {String(REEL.length).padStart(2, "0")} — running in the browser
-          </span>
-        </div>
-        <div className="reel flex gap-3 overflow-x-auto px-5 pb-4">
-          {REEL.map((r, i) => (
-            <figure
-              key={r.src}
-              className="relative aspect-[9/16] w-[78vw] max-w-[360px] flex-none overflow-hidden bg-[var(--mist)] sm:w-[320px]"
-            >
-              <ReelVideo
-                src={r.src}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-              {/* index badge — mix-blend keeps it legible over any footage */}
-              <span className="bk absolute left-4 top-4 z-10 font-mono text-[10px] uppercase tracking-[0.14em] mix-blend-difference text-white">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              {/* name + note sit on a scrim so busy footage never swallows them */}
-              <figcaption className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/70 via-black/25 to-transparent p-4 pt-10">
-                <p className="text-[clamp(22px,3vw,30px)] font-bold uppercase leading-[0.9] tracking-tight text-white">
-                  {r.name}
-                </p>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/70">
-                  {r.note}
-                </p>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-        <p className="bk mt-2 px-5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
-          drag — R&D demonstrations, captured live in the browser, unedited
-        </p>
-      </section>
+      {/* ── 06 · SELECTED WORK — BODY — live proof, kept ── */}
+      <div id="work">
+        <WorkReel
+          title="Selected work — body"
+          items={BODY_REEL}
+          footnote="drag — R&D demonstrations, captured live in the browser, unedited"
+        />
+      </div>
 
-      {/* ── POWERED BY REALITY ENGINE — the delivery advantage ── */}
+      {/* ── 07 · SELECTED WORK — FACE — same slab pattern, intentional
+             placeholders until each clip is captured ── */}
+      <WorkReel
+        title="Selected work — face"
+        items={FACE_REEL}
+        captureLabel="In capture — 08.2026"
+        footnote="face reel filling in as demos are recorded — same pipeline, same honesty"
+      />
+
+      {/* ── 08 · REALITY ENGINE — the ink manifesto slab ── */}
       <section
         id="engine"
-        className="border-t border-[var(--hairline)] px-5 py-20"
+        className="border-y border-[var(--hairline)] bg-black px-5 py-24 text-white"
       >
-        <span className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
+        <span className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-white/60">
           Powered by Reality Engine
         </span>
-        <h2 className="mt-4 max-w-[16ch] text-[clamp(32px,6.5vw,80px)] font-bold uppercase leading-[0.88] tracking-tight">
+        <h2 className="mt-6 max-w-[13ch] text-[clamp(40px,9vw,130px)] font-bold uppercase leading-[0.84] tracking-tight">
           We build the layer we render on
         </h2>
-        <p className="mt-6 max-w-[52ch] text-[15px] leading-relaxed text-[var(--muted)]">
+        <p className="mt-8 max-w-[52ch] text-[15px] leading-relaxed text-white/70">
           Our own browser-native tracking runtime for body, face, and ear
-          effects. It means your project starts from working infrastructure —
-          not from rebuilding the camera and tracking pipeline on your budget.
+          effects. Your project starts from working infrastructure — not from
+          rebuilding the camera and tracking pipeline on your budget.
         </p>
-        <div className="mt-10 grid gap-8 md:grid-cols-3">
+        <div className="mt-12 grid gap-8 border-t border-white/15 pt-8 md:grid-cols-3">
           {ENGINE.map((e) => (
             <div key={e.label}>
-              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/60">
                 {e.label}
               </p>
-              <p className="mt-2 text-[14px] leading-relaxed">{e.desc}</p>
+              <p className="mt-2 text-[14px] leading-relaxed text-white/90">
+                {e.desc}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── ENGAGEMENT MODEL — the sensible first step ── */}
-      <section
-        id="process"
-        className="border-t border-[var(--hairline)] px-5 py-20"
-      >
+      {/* ── 09 · ENGAGEMENT MODEL — the sensible first step ── */}
+      <section id="process" className="px-5 py-20">
         <span className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
           How a project starts
         </span>
@@ -393,7 +440,7 @@ export default function StudioHome() {
         </div>
       </section>
 
-      {/* ── WORK LIST ── */}
+      {/* ── 10 · WORK INDEX ── */}
       <section className="border-t border-[var(--hairline)] px-5 py-16">
         <span className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
           Selected work & R&D
@@ -440,32 +487,58 @@ export default function StudioHome() {
         </div>
       </section>
 
-      {/* ── MANIFESTO + CTA ── */}
-      <section className="relative overflow-hidden px-5 py-28 text-center">
-        <div
-          aria-hidden="true"
-          className="bubble absolute left-1/2 top-1/2 h-[46vmin] w-[52vmin] -translate-x-1/2 -translate-y-1/2 opacity-60"
-        />
-        <p className="bk relative font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
-          Transmission
+      {/* ── 11 · CLOSER — second cobalt slab; the Shape returns in chrome,
+             fully interactive, where the 2D blob used to be ── */}
+      <section
+        id="contact"
+        className="bg-[var(--cobalt)] px-5 py-20 text-white"
+      >
+        <p className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-white/70">
+          Have a project in mind? / Agency partnerships welcome
         </p>
-        <p className="relative mx-auto mt-4 max-w-[14ch] text-[clamp(36px,8vw,104px)] font-bold uppercase leading-[0.88] tracking-tight">
-          Notice harder.
-        </p>
-        <a
-          href={BRIEF}
-          className="film-parent group relative mt-10 inline-flex items-baseline gap-3 font-mono text-[14px] uppercase tracking-[0.16em]"
-        >
-          <span className="film-text font-bold">Send a project brief</span>
-          <span
-            aria-hidden="true"
-            className="transition-transform group-hover:translate-x-1"
-          >
-            →
+        <div className="mt-10 grid items-center gap-12 md:grid-cols-[1.3fr_1fr]">
+          <div>
+            <h2 className="text-[clamp(48px,9.5vw,150px)] font-bold uppercase leading-[0.82] tracking-tight">
+              Let&apos;s shape
+              <br />
+              <a
+                href={BRIEF}
+                className="border-b-[0.045em] border-[var(--acid)] transition-colors hover:text-white/80"
+              >
+                what&apos;s next.
+              </a>
+            </h2>
+            <div className="mt-14 max-w-[380px]">
+              <p className="bk mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-white/60">
+                Field notes from the engine — monthly
+              </p>
+              <NewsletterForm tone="inverse" />
+            </div>
+          </div>
+          <div className="relative mx-auto aspect-square w-full max-w-[420px]">
+            <TheShape
+              variant="chrome"
+              interactive
+              tintColor="#0012ff"
+              className="absolute inset-0 h-full w-full"
+              label="A chrome morphing form reflecting the cobalt page — drag to spin it"
+            />
+            <span className="bk pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.14em] text-white/50">
+              Drag — it&apos;s real
+            </span>
+          </div>
+        </div>
+        <div className="mt-16 flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3 border-t border-white/30 pt-6 font-mono text-[11px] uppercase tracking-[0.16em]">
+          <a href={BRIEF} className="film-ul [--ink:#fff]">
+            evan@shapereality.com
+          </a>
+          <span className="text-white/70">
+            San Francisco / Available worldwide
           </span>
-        </a>
-        <p className="relative mt-4 font-mono text-[11px] tracking-[0.1em] text-[var(--muted)]">
-          evan@shapereality.com
+          <span className="text-white/70">© Shape Reality 2026</span>
+        </div>
+        <p className="bk mt-10 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
+          Transmission — notice harder.
         </p>
       </section>
     </main>

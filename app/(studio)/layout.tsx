@@ -30,13 +30,19 @@ export default function StudioLayout({
           </Link>
           <nav className="flex items-center gap-5 font-mono text-[11px] uppercase tracking-[0.16em]">
             <a
+              href="/#tryon"
+              className="film-ul hidden text-[var(--muted)] transition-colors hover:text-[var(--ink)] sm:block"
+            >
+              Try-on
+            </a>
+            <a
               href="/#services"
               className="film-ul hidden text-[var(--muted)] transition-colors hover:text-[var(--ink)] sm:block"
             >
               Services
             </a>
             <a
-              href="/#proof"
+              href="/#work"
               className="film-ul hidden text-[var(--muted)] transition-colors hover:text-[var(--ink)] sm:block"
             >
               Work

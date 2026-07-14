@@ -32,30 +32,15 @@ html {
   --muted: rgba(0, 0, 0, 0.5);
   --hairline: rgba(0, 0, 0, 0.14);
   --mist: #f4f6fa;
-  /* The Signature — chromatic aberration: a prism spectrum that slides
-     across type, underlines, and the Bubble on interaction. Updated
-     2026.07.14 — replaces the pastel soap-film palette site-wide; the
-     page's one pop of color is this drift, not a static hue. */
-  --film: linear-gradient(
-    90deg,
-    #ff00ea,
-    #4c00ff,
-    #00c8ff,
-    #00ff90,
-    #f6ff00,
-    #ff3c00,
-    #ff00ea
-  );
-  --film-soft: conic-gradient(
-    from 210deg at 50% 50%,
-    rgba(255, 0, 234, 0.5),
-    rgba(76, 0, 255, 0.45),
-    rgba(0, 200, 255, 0.45),
-    rgba(0, 255, 144, 0.45),
-    rgba(246, 255, 0, 0.45),
-    rgba(255, 60, 0, 0.45),
-    rgba(255, 0, 234, 0.5)
-  );
+  /* Structural grounds (Brand Foundations v2.5 amendment, approved
+     2026.07.14): cobalt is promoted from campaign accent to ground —
+     max two full-bleed slabs per page. Acid survives only as the
+     closer's underline stroke. The Signature is no longer a gradient
+     of any kind: it's the live WebGL material (see the-shape.tsx).
+     "If it doesn't respond, it doesn't shimmer" — and a static
+     gradient can't respond. */
+  --cobalt: #0012ff;
+  --acid: #ccff00;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -76,44 +61,40 @@ html {
   content: " ]";
 }
 
-/* Thin-film text: the Signature clipped into type. Shimmers on hover —
-   "if it doesn't respond, it doesn't shimmer." */
+/* Hover language, post-gradient. The old thin-film gradient classes keep
+   their names (they're referenced across the SEO pages) but the behavior
+   is rebuilt without any faked chrome: hovering a display word drops its
+   fill and leaves the outline stroke — the render de-materializes under
+   your cursor. Links grow a solid ink underline. */
 .film-text {
-  background: var(--film);
-  background-size: 300% 100%;
-  background-position: 0% 50%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  transition: background-position 0.8s ease;
+  position: relative;
 }
-.film-text:hover,
-a:hover .film-text,
-.film-parent:hover .film-text {
-  background-position: 100% 50%;
+.film-text::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 0%;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+.film-text:hover::after,
+a:hover .film-text::after,
+.film-parent:hover .film-text::after {
+  width: 100%;
 }
 
-/* Ink at rest, film on hover (rows, links): the film only appears when
-   the element is touched — and it moves while it's there. */
+.film-hover {
+  transition: color 0.18s ease;
+}
 .film-parent:hover .film-hover,
 a:hover > .film-hover {
-  background: var(--film);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
   color: transparent;
-  animation: film-pan 2.6s ease-in-out infinite alternate;
-}
-@keyframes film-pan {
-  from {
-    background-position: 0% 50%;
-  }
-  to {
-    background-position: 100% 50%;
-  }
+  -webkit-text-stroke: 0.045em var(--ink);
 }
 
-/* Grow-underline in film (hover language for nav/links). */
+/* Grow-underline (hover language for nav/links). */
 .film-ul {
   position: relative;
 }
@@ -124,8 +105,7 @@ a:hover > .film-hover {
   bottom: -3px;
   height: 2px;
   width: 0%;
-  background: var(--film);
-  background-size: 300% 100%;
+  background: var(--ink);
   transition: width 0.3s ease;
 }
 .film-ul:hover::after,
@@ -133,63 +113,16 @@ a:hover > .film-hover {
   width: 100%;
 }
 
-/* ── The Bubble — the brand's signature element ──────────────────
-   A soap-film blob: constantly morphing form, spectral film, a bright
-   window highlight. Pure CSS placeholder for the WebGL version. */
-.bubble {
-  position: relative;
-  background:
-    radial-gradient(
-      120% 120% at 28% 22%,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0) 26%
-    ),
-    var(--film-soft);
-  border-radius: 44% 56% 62% 38% / 46% 40% 60% 54%;
-  animation:
-    bubble-morph 14s ease-in-out infinite alternate,
-    bubble-hue 26s linear infinite;
-  will-change: border-radius, filter;
-  opacity: 0.85;
+/* Ticker — the capability marquee. Two copies of the track scroll by
+   -50%; JS scrubs the playback rate with scroll velocity. */
+.ticker-track {
+  display: flex;
+  min-width: max-content;
+  animation: ticker-crawl 36s linear infinite;
 }
-.bubble::after {
-  /* film edge — where a real bubble's interference is strongest */
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow:
-    inset 0 0 0 1.5px rgba(255, 255, 255, 0.55),
-    inset -14px -18px 40px rgba(201, 181, 242, 0.35),
-    inset 16px 14px 44px rgba(159, 232, 230, 0.3);
-}
-.bubble:hover {
-  animation-duration: 7s, 9s;
-}
-@keyframes bubble-morph {
-  0% {
-    border-radius: 44% 56% 62% 38% / 46% 40% 60% 54%;
-    transform: rotate(0deg) scale(1);
-  }
-  33% {
-    border-radius: 58% 42% 39% 61% / 52% 60% 40% 48%;
-    transform: rotate(3deg) scale(1.04);
-  }
-  66% {
-    border-radius: 38% 62% 55% 45% / 60% 44% 56% 40%;
-    transform: rotate(-2deg) scale(0.97);
-  }
-  100% {
-    border-radius: 52% 48% 44% 56% / 42% 56% 44% 58%;
-    transform: rotate(1deg) scale(1.02);
-  }
-}
-@keyframes bubble-hue {
-  from {
-    filter: hue-rotate(0deg) saturate(1.1);
-  }
+@keyframes ticker-crawl {
   to {
-    filter: hue-rotate(360deg) saturate(1.1);
+    transform: translateX(-50%);
   }
 }
 
@@ -207,11 +140,12 @@ a:hover > .film-hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bubble {
+  .ticker-track {
     animation: none;
   }
-  .film-text,
-  .film-ul::after {
+  .film-text::after,
+  .film-ul::after,
+  .film-hover {
     transition: none;
   }
 }
