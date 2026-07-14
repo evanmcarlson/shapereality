@@ -12,7 +12,13 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   validateEnvironmentVariables();
 
-  const routesMap = [""].map((route) => ({
+  const routesMap = [
+    "",
+    "/webar-body-tracking",
+    "/webar-face-filters",
+    "/8th-wall-migration",
+    "/webar-for-agencies",
+  ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
   }));
