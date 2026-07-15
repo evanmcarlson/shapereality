@@ -4,14 +4,16 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * The Shape — the brand signature, live. A dependency-free WebGL raymarcher:
- * one form morphing sphere → cube → torus → octahedron forever, surfaced in
- * the house material (real per-channel refraction + chrome reflection +
- * fresnel — no gradients faking any of it).
+ * one form morphing sphere → cube → torus → octahedron forever, surfaced as
+ * a soap film: real thin-film interference (per-wavelength optical path
+ * through a draining, swirling film) — no gradients faking the rainbow.
  *
  * Two variants:
- *  - "glass"  (hero): transmission-first. If `refractTargetId` is set, that
- *    element's text is rasterized into a texture and sampled through the
- *    refracted rays — the page's own type visibly bends inside the glass.
+ *  - "glass"  (hero): a soap bubble — transmission-first, so the page shows
+ *    through the film ringed by interference rainbow. If `refractTargetId`
+ *    is set, that element's text is rasterized into a texture and sampled
+ *    through the (slightly) bent rays — the page's own type wobbles inside
+ *    the bubble.
  *  - "chrome" (closer): reflection-first, with the ground hemisphere tinted
  *    by the slab behind it (cobalt), so the object reads as sitting IN the
  *    section, not pasted on it.
@@ -41,6 +43,7 @@ uniform float uScale;
 uniform float uTint;
 uniform vec3 uTintColor;
 uniform vec3 uInk;
+uniform vec3 uPaper;
 uniform float uHasText;
 uniform sampler2D uText;
 
@@ -151,28 +154,54 @@ void main(){
 
   vec3 p = ro + rd * t;
   vec3 n = calcN(p);
-  float fres = pow(1.0 - max(dot(-rd, n), 0.0), 3.0);
+  float c0 = clamp(dot(-rd, n), 0.0, 1.0);
+  float fres = pow(1.0 - c0, 3.0);
   vec3 refl = env(reflect(rd, n));
 
-  // glass: per-channel refraction (real dispersion, not a gradient)
-  vec3 vr = refract(rd, n, 0.735);
-  vec3 vg = refract(rd, n, 0.75);
-  vec3 vb = refract(rd, n, 0.765);
-  vec3 rfr;
-  rfr.r = env(vr).r;
-  rfr.g = env(vg).g;
-  rfr.b = env(vb).b;
+  // ── soap film: real thin-film interference, not a gradient ──
+  // Snell gives the ray angle inside the water film (n = 1.33); together
+  // with local thickness it sets the optical path per wavelength.
+  float sin2 = (1.0 - c0 * c0) / (1.33 * 1.33);
+  float c1 = sqrt(max(0.0, 1.0 - sin2));
+  // thickness (nm): the film drains toward the bottom and swirls slowly.
+  // Swirl lives in object space so dragging spins the pattern with the form.
+  vec3 lp = rotX(uRot.y) * rotY(uRot.x) * ((p - uObjPos) / uScale);
+  float drain = (p.y - uObjPos.y) / uScale;
+  float swirl = sin(lp.x * 5.0 + uTime * 0.45)
+              * sin(lp.y * 4.0 - uTime * 0.35)
+              * sin(lp.z * 6.0 + uTime * 0.55);
+  float thick = 1150.0 - 420.0 * drain + 260.0 * swirl;
+  // half-wave shift at the outer interface: a vanishing film goes black
+  vec3 phase = 6.2831853 * (2.0 * 1.33 * thick * c1) / vec3(650.0, 532.0, 450.0);
+  vec3 irid = 0.5 - 0.5 * cos(phase);
+  irid = irid * irid * (3.0 - 2.0 * irid);
+
+  // transmission: a thin shell barely bends light — the page passes nearly
+  // straight through, with a slight per-channel wobble on the headline
+  vec3 vr = refract(rd, n, 0.87);
+  vec3 vg = refract(rd, n, 0.885);
+  vec3 vb = refract(rd, n, 0.90);
   float aR = textAlpha(p, vr);
   float aG = textAlpha(p, vg);
   float aB = textAlpha(p, vb);
-  rfr.r = mix(rfr.r, uInk.r, aR);
-  rfr.g = mix(rfr.g, uInk.g, aG);
-  rfr.b = mix(rfr.b, uInk.b, aB);
+  vec3 through;
+  through.r = mix(uPaper.r, uInk.r, aR);
+  through.g = mix(uPaper.g, uInk.g, aG);
+  through.b = mix(uPaper.b, uInk.b, aB);
 
-  vec3 glass = mix(rfr, refl, 0.35 + 0.6 * fres);
-  vec3 chrome = refl * (0.82 + 0.18 * fres);
-  vec3 col = mix(glass, chrome, uChrome);
-  col += vec3(1.0) * fres * 0.22;
+  // film reflectance: faint face-on, dominant at grazing (rainbow rim).
+  // The constant term keeps the bands visible even where env() is near
+  // black — a real film is lit from everywhere, our env only from spots.
+  float w = mix(0.12, 1.0, pow(1.0 - c0, 2.0));
+  vec3 filmRefl = (refl * 1.3 + vec3(0.45)) * irid * w;
+  vec3 bubble = through * (1.0 - 0.55 * w) + filmRefl;
+  // point-light sparkle: squaring favors the bright env bands over the sky
+  bubble += refl * refl * 0.22;
+  // a thin interference ring right at the silhouette
+  bubble += irid * pow(1.0 - c0, 7.0) * 0.9;
+
+  vec3 chrome = refl * (0.82 + 0.18 * fres) + vec3(fres * 0.22);
+  vec3 col = mix(bubble, chrome, uChrome);
 
   float a = 0.97;
   gl_FragColor = vec4(col * a, a);
@@ -203,7 +232,7 @@ export function TheShape({
   interactive = false,
   tintColor,
   className,
-  label = "A morphing liquid-glass form — the Shape Reality signature",
+  label = "A morphing iridescent soap-bubble form — the Shape Reality signature",
 }: {
   variant?: "glass" | "chrome";
   /** Element whose rect positions/sizes the object inside the canvas. */
@@ -292,6 +321,7 @@ export function TheShape({
     const uTint = U("uTint");
     const uTintColor = U("uTintColor");
     const uInk = U("uInk");
+    const uPaper = U("uPaper");
     const uHasText = U("uHasText");
     const uText = U("uText");
 
@@ -316,6 +346,14 @@ export function TheShape({
     );
     let hasText = 0;
     let ink: [number, number, number] = [0, 0, 0];
+    // the page color the film transmits — kept in sync with the theme
+    let paper: [number, number, number] = [0, 0, 0];
+    function readPaper() {
+      const v = getComputedStyle(document.documentElement)
+        .getPropertyValue("--paper")
+        .trim();
+      paper = v ? cssColorToRgb(v) : isDark() ? [0.04, 0.04, 0.05] : [1, 1, 1];
+    }
 
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const reducedMq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -323,6 +361,7 @@ export function TheShape({
     const maxDpr = coarse ? 1.5 : 2;
 
     function drawTextTexture() {
+      readPaper();
       hasText = 0;
       if (!refractTargetId) return;
       const target = document.getElementById(refractTargetId);
@@ -472,6 +511,7 @@ export function TheShape({
       ctx.uniform1f(uTint, tintColor ? 1 : 0);
       ctx.uniform3f(uTintColor, tint[0], tint[1], tint[2]);
       ctx.uniform3f(uInk, ink[0], ink[1], ink[2]);
+      ctx.uniform3f(uPaper, paper[0], paper[1], paper[2]);
       ctx.uniform1f(uHasText, hasText);
       ctx.uniform1i(uText, 0);
       ctx.drawArrays(ctx.TRIANGLES, 0, 3);

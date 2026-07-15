@@ -240,7 +240,7 @@ export default function StudioHome() {
           anchorId="hero-anchor"
           refractTargetId="hero-headline"
           className="absolute inset-0 z-10 h-full w-full"
-          label="A morphing liquid-glass form refracting the Shape Reality wordmark"
+          label="An iridescent soap-bubble form refracting the Shape Reality wordmark"
         />
       </section>
 
