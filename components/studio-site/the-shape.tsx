@@ -52,9 +52,13 @@ mat3 rotY(float a){ float c=cos(a), s=sin(a); return mat3(c,0.,-s, 0.,1.,0., s,0
 mat3 rotX(float a){ float c=cos(a), s=sin(a); return mat3(1.,0.,0., 0.,c,s, 0.,-s,c); }
 
 float sdSphere(vec3 p, float r){ return length(p)-r; }
-float sdBox(vec3 p, vec3 b, float r){ vec3 q=abs(p)-b; return length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.)-r; }
 float sdTorus(vec3 p, vec2 t){ vec2 q=vec2(length(p.xz)-t.x,p.y); return length(q)-t.y; }
-float sdOcta(vec3 p, float s){ p=abs(p); return (p.x+p.y+p.z-s)*0.57735; }
+// superellipsoid (Lk-norm ball): C-infinity smooth everywhere — no edges or
+// creases exist on the surface. k>2 reads as a soft cube, k<2 as a soft diamond.
+float sdSuper(vec3 p, float s, float k){
+  vec3 q = pow(abs(p), vec3(k));
+  return pow(q.x + q.y + q.z, 1.0/k) - s;
+}
 
 float shape(vec3 p){
   float k = mod(uMorph, 4.0);
@@ -62,9 +66,10 @@ float shape(vec3 p){
   float s = smoothstep(0.25, 0.75, t);
   float i = floor(k);
   float dS = sdSphere(p, 0.78);
-  float dB = sdBox(p, vec3(0.55), 0.12);
+  float dB = sdSuper(p, 0.66, 4.0);
+  // k<2 over-reports distance up to ~27%; scale down so the marcher never overshoots
+  float dO = sdSuper(p, 0.98, 1.4) * 0.72;
   float dT = sdTorus(p, vec2(0.6, 0.28));
-  float dO = sdOcta(p, 1.02);
   float d0; float d1;
   if (i < 0.5)      { d0 = dS; d1 = dB; }
   else if (i < 1.5) { d0 = dB; d1 = dT; }

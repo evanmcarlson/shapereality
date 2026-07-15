@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import { NewsletterForm } from "components/newsletter-form";
 import { TheShape } from "components/studio-site/the-shape";
 import { Ticker } from "components/studio-site/ticker";
 import { WorkReel, type ReelItem } from "components/studio-site/work-reel";
-import { NewsletterForm } from "components/newsletter-form";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 const BRIEF = "mailto:evan@shapereality.com?subject=Project%20brief";
 const VTO_SPRINT =
@@ -29,10 +29,10 @@ export const metadata: Metadata = {
 // what's a sensible first step. (Brand Foundations §11 + v2.5 amendment.)
 
 const PROOF_STRIP = [
-  "5 years building at 8th Wall / Niantic",
-  "Body, face + ear tracking — our own engine",
-  "No app download — it's the browser",
-  "We stay on after launch — ongoing dev support",
+  "Built by an ex-8th Wall Engineer",
+  "Body, face + ear tracking",
+  "No app required",
+  "Ongoing developer support",
 ];
 
 // The wedge offers below the try-on flagship. VTO leads the page now, so
@@ -206,31 +206,23 @@ export default function StudioHome() {
               <br />
               Reality
             </h1>
+            <p className="mt-6 max-w-[26ch] text-[clamp(20px,3.4vw,40px)] font-bold uppercase leading-[1.05] tracking-tight">
+              We build interactive experiences across people, products &
+              places.
+            </p>
             <div className="mt-8 flex items-center gap-5">
-              <p className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
+              <p className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--ink)]">
                 Spatial Studio · San Francisco · Est. &apos;25
               </p>
-              <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--cobalt)]" />
-                Available — Q3 2026
-              </p>
             </div>
-            {/* the point of view, pinned to the bottom of the column */}
-            <div className="mt-auto flex flex-wrap items-end justify-between gap-x-10 gap-y-8 pt-16">
-              <p className="max-w-[26ch] text-[clamp(20px,3.4vw,40px)] font-bold uppercase leading-[1.05] tracking-tight">
-                We build interactive experiences across people, products &
-                places.
-              </p>
-              <a
-                href="#work"
-                aria-label="See the work"
-                className="grid h-28 w-28 shrink-0 place-items-center rounded-full border border-[var(--ink)] text-center font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] transition-colors hover:bg-[var(--ink)] hover:text-[var(--paper)]"
-              >
-                See
-                <br />
-                the work ↓
-              </a>
-            </div>
+            {/* the one true glass surface in the UI: a CTA refracting the
+                live canvas behind it via backdrop-filter — not a gradient */}
+            <a
+              href={BRIEF}
+              className="relative z-20 mt-6 w-fit whitespace-nowrap rounded-full border border-[rgba(127,127,127,0.35)] bg-[rgba(255,255,255,0.1)] px-7 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.14em] shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] backdrop-blur-xl backdrop-saturate-150 transition-transform hover:scale-[1.04]"
+            >
+              Start a project
+            </a>
           </div>
           {/* the Shape's slot — receives the drag (the canvas above it is
               pointer-transparent) and extends into the headline on desktop
@@ -241,14 +233,6 @@ export default function StudioHome() {
               aria-hidden="true"
               className="mx-auto aspect-square w-[76vw] max-w-[420px] md:absolute md:inset-x-0 md:top-1/2 md:mx-0 md:w-auto md:max-w-none md:-translate-y-1/2"
             />
-            {/* the one true glass surface in the UI: a CTA refracting the
-                live canvas behind it via backdrop-filter — not a gradient */}
-            <a
-              href={BRIEF}
-              className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-[rgba(127,127,127,0.35)] bg-[rgba(255,255,255,0.1)] px-7 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.14em] shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] backdrop-blur-xl backdrop-saturate-150 transition-transform hover:scale-[1.04] md:bottom-16"
-            >
-              Start a project
-            </a>
           </div>
         </div>
         <TheShape
@@ -365,7 +349,7 @@ export default function StudioHome() {
       {/* ── 06 · SELECTED WORK — BODY — live proof, kept ── */}
       <div id="work">
         <WorkReel
-          title="Selected work — body"
+          title="3D Body Tracking"
           items={BODY_REEL}
           footnote="drag — R&D demonstrations, captured live in the browser, unedited"
         />
@@ -374,7 +358,7 @@ export default function StudioHome() {
       {/* ── 07 · SELECTED WORK — FACE — same slab pattern, intentional
              placeholders until each clip is captured ── */}
       <WorkReel
-        title="Selected work — face"
+        title="Face"
         items={FACE_REEL}
         captureLabel="In capture — 08.2026"
         footnote="face reel filling in as demos are recorded — same pipeline, same honesty"
@@ -499,7 +483,7 @@ export default function StudioHome() {
         <div className="mt-10 grid items-center gap-12 md:grid-cols-[1.3fr_1fr]">
           <div>
             <h2 className="text-[clamp(48px,9.5vw,150px)] font-bold uppercase leading-[0.82] tracking-tight">
-              Let&apos;s shape
+              Shape
               <br />
               <a
                 href={BRIEF}

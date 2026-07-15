@@ -5,17 +5,19 @@ import { useEffect, useRef } from "react";
 /**
  * Capability ticker. CSS animation does the crawl (zero JS at rest);
  * scrolling the page scrubs the playback rate up so the strip feels wired
- * to the same nervous system as the Shape. Ink on paper — the one set-off
- * term is outline-stroked, not gradient-filled.
+ * to the same nervous system as the Shape.
  */
 const TERMS = [
-  "WebAR",
+  "White label",
+  "Web-based",
+  "Augmented reality",
   "Virtual try-on",
-  "Body effects",
-  "True ear anchors",
-  "Interactive 3D",
-  "8th Wall migration",
-  "Creative technology",
+  "Face tracking",
+  "Iris tracking",
+  "Ear tracking",
+  "Hand tracking",
+  "Wrist tracking",
+  "3D Body tracking",
 ];
 
 export function Ticker() {
@@ -57,17 +59,9 @@ export function Ticker() {
           key={t}
           className="flex items-center whitespace-nowrap text-[15px] font-bold uppercase tracking-tight"
         >
-          <span
-            className={
-              t === "Virtual try-on"
-                ? "text-transparent [-webkit-text-stroke:1.2px_var(--ink)]"
-                : undefined
-            }
-          >
-            {t}
-          </span>
+          <span>{t}</span>
           <span aria-hidden="true" className="px-6 text-[10px]">
-            ✦
+            *
           </span>
         </span>
       ))}
