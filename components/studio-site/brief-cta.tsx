@@ -1,5 +1,7 @@
+import { InquiryButton } from "components/studio-site/inquiry";
+
 // Closing CTA band shared by the service/SEO pages. Every page ends the same
-// way: one low-risk ask, the email in plain sight.
+// way: one low-risk ask (the inquiry panel), the email in plain sight.
 export function BriefCta({
   heading = "Have a brief? Send it over.",
   sub = "Tell us the campaign, the audience, and the deadline. You'll get an honest read on feasibility — and a fixed-price first step.",
@@ -19,8 +21,8 @@ export function BriefCta({
       <p className="mx-auto mt-5 max-w-[46ch] text-[14.5px] leading-relaxed text-[var(--muted)]">
         {sub}
       </p>
-      <a
-        href={`mailto:evan@shapereality.com?subject=${encodeURIComponent(subject)}`}
+      <InquiryButton
+        context={subject}
         className="film-parent group mt-8 inline-flex items-baseline gap-3 font-mono text-[14px] uppercase tracking-[0.16em]"
       >
         <span className="film-text font-bold">{cta}</span>
@@ -30,7 +32,7 @@ export function BriefCta({
         >
           →
         </span>
-      </a>
+      </InquiryButton>
       <p className="mt-4 font-mono text-[11px] tracking-[0.1em] text-[var(--muted)]">
         evan@shapereality.com
       </p>

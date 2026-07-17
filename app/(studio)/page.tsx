@@ -1,4 +1,5 @@
 import { NewsletterForm } from "components/newsletter-form";
+import { InquiryButton } from "components/studio-site/inquiry";
 import { TheShape } from "components/studio-site/the-shape";
 import { Ticker } from "components/studio-site/ticker";
 import { WorkReel, type ReelItem } from "components/studio-site/work-reel";
@@ -6,8 +7,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 const BRIEF = "mailto:evan@shapereality.com?subject=Project%20brief";
-const VTO_SPRINT =
-  "mailto:evan@shapereality.com?subject=Try-on%20feasibility%20sprint";
 
 export const metadata: Metadata = {
   description:
@@ -29,10 +28,10 @@ export const metadata: Metadata = {
 // what's a sensible first step. (Brand Foundations §11 + v2.5 amendment.)
 
 const PROOF_STRIP = [
-  "Built by an ex-8th Wall Engineer",
-  "Body, face + ear tracking",
+  "Face + ear tracking",
+  "Hand + wrist tracking",
+  "Body tracking + segmentation",
   "No app required",
-  "Ongoing developer support",
 ];
 
 // The wedge offers below the try-on flagship. VTO leads the page now, so
@@ -47,11 +46,6 @@ const SERVICES = [
     name: "Face & accessory AR",
     desc: "Face filters, headwear, iris effects — and true ear anchoring for earrings and earbuds, beyond the standard face mask.",
     href: "/webar-face-filters",
-  },
-  {
-    name: "8th Wall migration",
-    desc: "The hosted platform is gone; published experiences go dark Feb 2027. We audit, self-host, and modernize exported projects.",
-    href: "/8th-wall-migration",
   },
 ];
 
@@ -95,13 +89,30 @@ const BODY_REEL: ReelItem[] = [
   },
 ];
 
-// Face effects reel — placeholders on purpose until each demo is captured.
-// Same workflow as the body reel: mp4 into /public/face/, add the src here.
+// Face effects reel — captured live via the Studio's record button, dropped
+// in /public/face/. Same workflow as the body reel: mp4 into /public/face/,
+// add a row here.
 const FACE_REEL: ReelItem[] = [
-  { name: "Eyewear", note: "frames anchored to the face mesh" },
-  { name: "Earrings", note: "true ear anchors — lobe, helix, canal" },
-  { name: "Makeup", note: "lips, liner, shadow — rendered live" },
-  { name: "Glass Mask", note: "the house material, on a face" },
+  {
+    name: "Makeup",
+    note: "lips, blush, liner, shadow — rendered live",
+    src: "/face/studio-effect-makeup.mp4",
+  },
+  {
+    name: "Earrings",
+    note: "true ear anchors — lobe, helix, canal",
+    src: "/face/studio-effect-earrings.mp4",
+  },
+  {
+    name: "Oni Mask",
+    note: "a full face mask, tracked to the jaw",
+    src: "/face/studio-effect-oni-mask.mp4",
+  },
+  {
+    name: "Headwear",
+    note: "a tricorn and charms, holding through motion",
+    src: "/face/studio-effect-headwear.mp4",
+  },
 ];
 
 // Reality Engine, in buyer language — the delivery advantage, never a
@@ -207,8 +218,7 @@ export default function StudioHome() {
               Reality
             </h1>
             <p className="mt-6 max-w-[26ch] text-[clamp(20px,3.4vw,40px)] font-bold uppercase leading-[1.05] tracking-tight">
-              We build interactive experiences across people, products &
-              places.
+              We build interactive experiences across people, products & places.
             </p>
             <div className="mt-8 flex items-center gap-5">
               <p className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--ink)]">
@@ -217,12 +227,9 @@ export default function StudioHome() {
             </div>
             {/* the one true glass surface in the UI: a CTA refracting the
                 live canvas behind it via backdrop-filter — not a gradient */}
-            <a
-              href={BRIEF}
-              className="relative z-20 mt-6 w-fit whitespace-nowrap rounded-full border border-[rgba(127,127,127,0.35)] bg-[rgba(255,255,255,0.1)] px-7 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.14em] shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] backdrop-blur-xl backdrop-saturate-150 transition-transform hover:scale-[1.04]"
-            >
+            <InquiryButton className="relative z-20 mt-6 w-fit whitespace-nowrap rounded-full border border-[rgba(127,127,127,0.35)] bg-[rgba(255,255,255,0.1)] px-7 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.14em] shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] backdrop-blur-xl backdrop-saturate-150 transition-transform hover:scale-[1.04]">
               Start a project
-            </a>
+            </InquiryButton>
           </div>
           {/* the Shape's slot — receives the drag (the canvas above it is
               pointer-transparent) and extends into the headline on desktop
@@ -301,12 +308,12 @@ export default function StudioHome() {
           ))}
         </div>
         <div className="mt-10 flex flex-wrap items-center gap-6">
-          <a
-            href={VTO_SPRINT}
+          <InquiryButton
+            context="Try-on feasibility sprint"
             className="rounded-full border border-white px-7 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.14em] transition-colors hover:bg-white hover:text-[var(--cobalt)]"
           >
             Book a try-on feasibility sprint
-          </a>
+          </InquiryButton>
           <p className="max-w-[40ch] font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-white/60">
             Wrist try-on ships as a pilot until our tracking benchmark passes.
             We don&apos;t overpromise.
@@ -355,13 +362,11 @@ export default function StudioHome() {
         />
       </div>
 
-      {/* ── 07 · SELECTED WORK — FACE — same slab pattern, intentional
-             placeholders until each clip is captured ── */}
+      {/* ── 07 · SELECTED WORK — FACE — same slab pattern as the body reel ── */}
       <WorkReel
         title="Face"
         items={FACE_REEL}
-        captureLabel="In capture — 08.2026"
-        footnote="face reel filling in as demos are recorded — same pipeline, same honesty"
+        footnote="drag — R&D demonstrations, captured live in the browser, unedited"
       />
 
       {/* ── 08 · REALITY ENGINE — the ink manifesto slab ── */}
@@ -485,12 +490,9 @@ export default function StudioHome() {
             <h2 className="text-[clamp(48px,9.5vw,150px)] font-bold uppercase leading-[0.82] tracking-tight">
               Shape
               <br />
-              <a
-                href={BRIEF}
-                className="border-b-[0.045em] border-[var(--acid)] transition-colors hover:text-white/80"
-              >
+              <InquiryButton className="border-b-[0.045em] border-[var(--acid)] text-left uppercase transition-colors hover:text-white/80">
                 what&apos;s next.
-              </a>
+              </InquiryButton>
             </h2>
             <div className="mt-14 max-w-[380px]">
               <p className="bk mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-white/60">

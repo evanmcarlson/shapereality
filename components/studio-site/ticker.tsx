@@ -18,6 +18,7 @@ const TERMS = [
   "Hand tracking",
   "Wrist tracking",
   "3D Body tracking",
+  "Segmentation",
 ];
 
 export function Ticker() {

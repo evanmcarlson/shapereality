@@ -9,11 +9,13 @@ import { useEffect, useRef, useState } from "react";
  * through a draining, swirling film) — no gradients faking the rainbow.
  *
  * Two variants:
- *  - "glass"  (hero): a soap bubble — transmission-first, so the page shows
- *    through the film ringed by interference rainbow. If `refractTargetId`
- *    is set, that element's text is rasterized into a texture and sampled
- *    through the (slightly) bent rays — the page's own type wobbles inside
- *    the bubble.
+ *  - "glass"  (hero): a soap bubble — truly clear. The canvas alpha stays
+ *    near zero across the face, so the live page passes through untouched
+ *    (no theme color is ever baked into the shader); the film contributes
+ *    only interference rainbow and the occlusion of what it reflects away.
+ *    If `refractTargetId` is set, that element's text is rasterized into a
+ *    texture and sampled through the (slightly) bent rays — the page's own
+ *    type wobbles where the film gets steep.
  *  - "chrome" (closer): reflection-first, with the ground hemisphere tinted
  *    by the slab behind it (cobalt), so the object reads as sitting IN the
  *    section, not pasted on it.
@@ -43,7 +45,6 @@ uniform float uScale;
 uniform float uTint;
 uniform vec3 uTintColor;
 uniform vec3 uInk;
-uniform vec3 uPaper;
 uniform float uHasText;
 uniform sampler2D uText;
 
@@ -176,35 +177,38 @@ void main(){
   vec3 irid = 0.5 - 0.5 * cos(phase);
   irid = irid * irid * (3.0 - 2.0 * irid);
 
-  // transmission: a thin shell barely bends light — the page passes nearly
-  // straight through, with a slight per-channel wobble on the headline
+  // transmission: a true film is clear — the page itself passes through
+  // the canvas (low alpha), no page color ever enters the shader. The
+  // page's type is additionally sampled through slightly bent rays so it
+  // wobbles where the film gets steep.
   vec3 vr = refract(rd, n, 0.87);
   vec3 vg = refract(rd, n, 0.885);
   vec3 vb = refract(rd, n, 0.90);
-  float aR = textAlpha(p, vr);
-  float aG = textAlpha(p, vg);
-  float aB = textAlpha(p, vb);
-  vec3 through;
-  through.r = mix(uPaper.r, uInk.r, aR);
-  through.g = mix(uPaper.g, uInk.g, aG);
-  through.b = mix(uPaper.b, uInk.b, aB);
+  vec3 tex = vec3(textAlpha(p, vr), textAlpha(p, vg), textAlpha(p, vb));
 
-  // film reflectance: faint face-on, dominant at grazing (rainbow rim).
+  // film visibility: faint face-on, dominant at grazing (rainbow rim).
   // The constant term keeps the bands visible even where env() is near
   // black — a real film is lit from everywhere, our env only from spots.
   float w = mix(0.12, 1.0, pow(1.0 - c0, 2.0));
   vec3 filmRefl = (refl * 1.3 + vec3(0.45)) * irid * w;
-  vec3 bubble = through * (1.0 - 0.55 * w) + filmRefl;
   // point-light sparkle: squaring favors the bright env bands over the sky
-  bubble += refl * refl * 0.22;
+  filmRefl += refl * refl * 0.22;
   // a thin interference ring right at the silhouette
-  bubble += irid * pow(1.0 - c0, 7.0) * 0.9;
+  filmRefl += irid * pow(1.0 - c0, 7.0) * 0.9;
+
+  // a film only hides what it reflects: occlusion tracks the reflected
+  // fraction (band-modulated), so on light pages the film reads as a
+  // faintly banded shadow and on dark pages as glow — energy moved, not
+  // a painted fill.
+  float occl = w * (0.25 + 0.5 * dot(irid, vec3(1.0 / 3.0)));
+  // re-render the occluded share of the type through the bent rays
+  // (ink is sampled from the DOM, never assumed)
+  vec3 src = filmRefl + uInk * tex * occl;
 
   vec3 chrome = refl * (0.82 + 0.18 * fres) + vec3(fres * 0.22);
-  vec3 col = mix(bubble, chrome, uChrome);
-
-  float a = 0.97;
-  gl_FragColor = vec4(col * a, a);
+  gl_FragColor = vec4(
+    mix(src, chrome * 0.97, uChrome),
+    mix(occl, 0.97, uChrome));
 }
 `;
 
@@ -248,6 +252,12 @@ export function TheShape({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [failed, setFailed] = useState(false);
+  // A canvas whose context is already lost is unrecoverable from JS: once
+  // lost, getExtension("WEBGL_lose_context") returns null, so restoreContext
+  // is unreachable. The retry path therefore mounts a brand-new canvas
+  // element (fresh element → fresh context) by bumping this key.
+  const [canvasGen, setCanvasGen] = useState(0);
+  const bootTries = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -264,11 +274,58 @@ export function TheShape({
     } catch {
       gl = null;
     }
+    // Context creation can fail transiently right after a client-side
+    // navigation, while the outgoing page's contexts are still tearing down —
+    // retry on a fresh canvas before giving up.
     if (!gl) {
+      bootTries.current += 1;
+      if (bootTries.current <= 3) {
+        const retry = setTimeout(
+          () => setCanvasGen((g) => g + 1),
+          120 * bootTries.current,
+        );
+        return () => clearTimeout(retry);
+      }
       setFailed(true);
       return;
     }
     const ctx = gl;
+    // Re-running on a canvas whose context a previous cleanup released
+    // (double-invoked dev effects, reused DOM): restore is impossible now —
+    // swap in a fresh canvas element instead.
+    if (ctx.isContextLost()) {
+      bootTries.current += 1;
+      if (bootTries.current <= 3) {
+        setCanvasGen((g) => g + 1);
+      } else {
+        setFailed(true);
+      }
+      return;
+    }
+    bootTries.current = 0;
+    // Grabbed while healthy: the extension object keeps working after a
+    // loss, but getExtension itself stops returning it.
+    const loseExt = ctx.getExtension("WEBGL_lose_context");
+
+    // GL resources live in reassignable slots: a restored context keeps its
+    // identity but voids every resource, so setup() must be re-runnable.
+    let ready = false;
+    let textTex: WebGLTexture | null = null;
+    let uRes: WebGLUniformLocation | null = null;
+    let uTime: WebGLUniformLocation | null = null;
+    let uMorph: WebGLUniformLocation | null = null;
+    let uRot: WebGLUniformLocation | null = null;
+    let uDark: WebGLUniformLocation | null = null;
+    let uChrome: WebGLUniformLocation | null = null;
+    let uObjPos: WebGLUniformLocation | null = null;
+    let uScale: WebGLUniformLocation | null = null;
+    let uTint: WebGLUniformLocation | null = null;
+    let uTintColor: WebGLUniformLocation | null = null;
+    let uInk: WebGLUniformLocation | null = null;
+    let uHasText: WebGLUniformLocation | null = null;
+    let uText: WebGLUniformLocation | null = null;
+    let hasText = 0;
+    let ink: [number, number, number] = [0, 0, 0];
 
     function compile(type: number, src: string) {
       const s = ctx.createShader(type);
@@ -278,81 +335,69 @@ export function TheShape({
       if (!ctx.getShaderParameter(s, ctx.COMPILE_STATUS)) return null;
       return s;
     }
-    const vs = compile(ctx.VERTEX_SHADER, VERT);
-    const fs = compile(ctx.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) {
-      setFailed(true);
-      return;
-    }
-    const prog = ctx.createProgram();
-    if (!prog) {
-      setFailed(true);
-      return;
-    }
-    ctx.attachShader(prog, vs);
-    ctx.attachShader(prog, fs);
-    ctx.linkProgram(prog);
-    if (!ctx.getProgramParameter(prog, ctx.LINK_STATUS)) {
-      setFailed(true);
-      return;
-    }
-    ctx.useProgram(prog);
 
-    const buf = ctx.createBuffer();
-    ctx.bindBuffer(ctx.ARRAY_BUFFER, buf);
-    ctx.bufferData(
-      ctx.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      ctx.STATIC_DRAW,
-    );
-    const loc = ctx.getAttribLocation(prog, "aPos");
-    ctx.enableVertexAttribArray(loc);
-    ctx.vertexAttribPointer(loc, 2, ctx.FLOAT, false, 0, 0);
+    function setup(): boolean {
+      ready = false;
+      const vs = compile(ctx.VERTEX_SHADER, VERT);
+      const fs = compile(ctx.FRAGMENT_SHADER, FRAG);
+      if (!vs || !fs) return false;
+      const prog = ctx.createProgram();
+      if (!prog) return false;
+      ctx.attachShader(prog, vs);
+      ctx.attachShader(prog, fs);
+      ctx.linkProgram(prog);
+      if (!ctx.getProgramParameter(prog, ctx.LINK_STATUS)) return false;
+      ctx.useProgram(prog);
 
-    const U = (name: string) => ctx.getUniformLocation(prog, name);
-    const uRes = U("uRes");
-    const uTime = U("uTime");
-    const uMorph = U("uMorph");
-    const uRot = U("uRot");
-    const uDark = U("uDark");
-    const uChrome = U("uChrome");
-    const uObjPos = U("uObjPos");
-    const uScale = U("uScale");
-    const uTint = U("uTint");
-    const uTintColor = U("uTintColor");
-    const uInk = U("uInk");
-    const uPaper = U("uPaper");
-    const uHasText = U("uHasText");
-    const uText = U("uText");
+      const buf = ctx.createBuffer();
+      ctx.bindBuffer(ctx.ARRAY_BUFFER, buf);
+      ctx.bufferData(
+        ctx.ARRAY_BUFFER,
+        new Float32Array([-1, -1, 3, -1, -1, 3]),
+        ctx.STATIC_DRAW,
+      );
+      const loc = ctx.getAttribLocation(prog, "aPos");
+      ctx.enableVertexAttribArray(loc);
+      ctx.vertexAttribPointer(loc, 2, ctx.FLOAT, false, 0, 0);
 
-    // ── text texture: the page's own headline, rasterized ──
-    const textTex = ctx.createTexture();
-    ctx.activeTexture(ctx.TEXTURE0);
-    ctx.bindTexture(ctx.TEXTURE_2D, textTex);
-    ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR);
-    ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
-    ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_S, ctx.CLAMP_TO_EDGE);
-    ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_T, ctx.CLAMP_TO_EDGE);
-    ctx.texImage2D(
-      ctx.TEXTURE_2D,
-      0,
-      ctx.RGBA,
-      1,
-      1,
-      0,
-      ctx.RGBA,
-      ctx.UNSIGNED_BYTE,
-      new Uint8Array([0, 0, 0, 0]),
-    );
-    let hasText = 0;
-    let ink: [number, number, number] = [0, 0, 0];
-    // the page color the film transmits — kept in sync with the theme
-    let paper: [number, number, number] = [0, 0, 0];
-    function readPaper() {
-      const v = getComputedStyle(document.documentElement)
-        .getPropertyValue("--paper")
-        .trim();
-      paper = v ? cssColorToRgb(v) : isDark() ? [0.04, 0.04, 0.05] : [1, 1, 1];
+      const U = (name: string) => ctx.getUniformLocation(prog, name);
+      uRes = U("uRes");
+      uTime = U("uTime");
+      uMorph = U("uMorph");
+      uRot = U("uRot");
+      uDark = U("uDark");
+      uChrome = U("uChrome");
+      uObjPos = U("uObjPos");
+      uScale = U("uScale");
+      uTint = U("uTint");
+      uTintColor = U("uTintColor");
+      uInk = U("uInk");
+      uHasText = U("uHasText");
+      uText = U("uText");
+
+      // ── text texture: the page's own headline, rasterized ──
+      textTex = ctx.createTexture();
+      ctx.activeTexture(ctx.TEXTURE0);
+      ctx.bindTexture(ctx.TEXTURE_2D, textTex);
+      ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR);
+      ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
+      ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_S, ctx.CLAMP_TO_EDGE);
+      ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_T, ctx.CLAMP_TO_EDGE);
+      ctx.texImage2D(
+        ctx.TEXTURE_2D,
+        0,
+        ctx.RGBA,
+        1,
+        1,
+        0,
+        ctx.RGBA,
+        ctx.UNSIGNED_BYTE,
+        new Uint8Array([0, 0, 0, 0]),
+      );
+      hasText = 0;
+      ctx.viewport(0, 0, ctx.drawingBufferWidth, ctx.drawingBufferHeight);
+      ready = true;
+      return true;
     }
 
     const coarse = window.matchMedia("(pointer: coarse)").matches;
@@ -361,8 +406,8 @@ export function TheShape({
     const maxDpr = coarse ? 1.5 : 2;
 
     function drawTextTexture() {
-      readPaper();
       hasText = 0;
+      if (!ready || ctx.isContextLost()) return;
       if (!refractTargetId) return;
       const target = document.getElementById(refractTargetId);
       if (!target || !canvas) return;
@@ -482,6 +527,7 @@ export function TheShape({
     function draw(now: number) {
       raf = null;
       if (!canvas) return;
+      if (!ready || ctx.isContextLost()) return;
       if (resize()) drawTextTexture();
       const t = (now - t0) / 1000;
       const reduced = reducedMq.matches;
@@ -511,7 +557,6 @@ export function TheShape({
       ctx.uniform1f(uTint, tintColor ? 1 : 0);
       ctx.uniform3f(uTintColor, tint[0], tint[1], tint[2]);
       ctx.uniform3f(uInk, ink[0], ink[1], ink[2]);
-      ctx.uniform3f(uPaper, paper[0], paper[1], paper[2]);
       ctx.uniform1f(uHasText, hasText);
       ctx.uniform1i(uText, 0);
       ctx.drawArrays(ctx.TRIANGLES, 0, 3);
@@ -525,8 +570,7 @@ export function TheShape({
     // ── drag: on the anchor (hero, canvas is pointer-transparent) or the
     //    canvas itself (closer). Horizontal-only on touch keeps scrolling. ──
     const dragEl =
-      (!interactive && anchorId && document.getElementById(anchorId)) ||
-      canvas;
+      (!interactive && anchorId && document.getElementById(anchorId)) || canvas;
     dragEl.style.touchAction = "pan-y";
     dragEl.style.cursor = "grab";
 
@@ -605,12 +649,21 @@ export function TheShape({
     reducedMq.addEventListener("change", onTheme);
 
     function onLost(e: Event) {
-      e.preventDefault();
+      e.preventDefault(); // signals the browser we can handle a restore
+      ready = false;
       if (raf !== null) cancelAnimationFrame(raf);
       raf = null;
     }
     function onRestored() {
-      setFailed(true); // simplest safe recovery: show the poster
+      // A restored context keeps its identity but loses every resource —
+      // rebuild them and resume, instead of giving up on a working GPU.
+      if (!setup()) {
+        setFailed(true);
+        return;
+      }
+      resize();
+      drawTextTexture();
+      schedule();
     }
     canvas.addEventListener("webglcontextlost", onLost);
     canvas.addEventListener("webglcontextrestored", onRestored);
@@ -621,9 +674,13 @@ export function TheShape({
       schedule();
     });
 
-    resize();
-    drawTextTexture();
-    schedule();
+    if (!setup()) {
+      setFailed(true);
+    } else {
+      resize();
+      drawTextTexture();
+      schedule();
+    }
 
     return () => {
       if (raf !== null) cancelAnimationFrame(raf);
@@ -640,9 +697,9 @@ export function TheShape({
       reducedMq.removeEventListener("change", onTheme);
       mo.disconnect();
       io.disconnect();
-      ctx.getExtension("WEBGL_lose_context")?.loseContext();
+      if (!ctx.isContextLost()) loseExt?.loseContext();
     };
-  }, [variant, anchorId, refractTargetId, interactive, tintColor]);
+  }, [variant, anchorId, refractTargetId, interactive, tintColor, canvasGen]);
 
   if (failed) {
     return (
@@ -661,6 +718,7 @@ export function TheShape({
 
   return (
     <canvas
+      key={canvasGen}
       ref={canvasRef}
       className={className}
       role="img"

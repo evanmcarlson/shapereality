@@ -9,7 +9,13 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Menu } from "lib/shopify/types";
 // import Search, { SearchSkeleton } from "./search"; // hidden for now
 
-export default function MobileMenu({ menu, buttonClassName }: { menu: Menu[]; buttonClassName?: string }) {
+export default function MobileMenu({
+  menu,
+  buttonClassName,
+}: {
+  menu: Menu[];
+  buttonClassName?: string;
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +41,10 @@ export default function MobileMenu({ menu, buttonClassName }: { menu: Menu[]; bu
       <button
         onClick={openMobileMenu}
         aria-label="Open mobile menu"
-        className={buttonClassName ?? "flex h-11 w-11 cursor-pointer items-center justify-center rounded-md border border-neutral-200 text-black transition-colors md:hidden dark:border-neutral-700 dark:text-white"}
+        className={
+          buttonClassName ??
+          "flex h-11 w-11 cursor-pointer items-center justify-center rounded-md border border-neutral-200 text-black transition-colors md:hidden dark:border-neutral-700 dark:text-white"
+        }
       >
         <Bars3Icon className="h-4" />
       </button>

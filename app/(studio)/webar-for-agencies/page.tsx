@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { BriefCta } from "components/studio-site/brief-cta";
 
+// Reframed 2026-07-16 (site architecture v2, call №3): the URL keeps its
+// index equity, but the page sells white-label delivery as a property of
+// every engagement — agencies are one audience among several, not the door.
 export const metadata: Metadata = {
-  title: "WebAR for Agencies — White-Label Engineering",
+  title: "White-Label WebAR Engineering",
   description:
-    "Senior white-label WebAR engineering for agencies: camera and tracking architecture, Three.js/WebGL implementation, mobile optimization, and technical QA. You keep the client and the credit.",
+    "Senior white-label WebAR engineering for agencies, studios, and product teams: tracking architecture, Three.js/WebGL implementation, mobile optimization, and technical QA. Your brand on the work.",
 };
 
 const PROMISES = [
@@ -29,26 +32,28 @@ const PROMISES = [
 const FITS = [
   "Experiential & activation agencies without an in-house WebAR specialist",
   "3D / VFX studios that need browser delivery for a campaign",
-  "Ecommerce agencies whose clients are asking for try-on",
+  "Ecommerce teams whose clients are asking for try-on",
+  "Design studios fronting their own client with a senior dev behind the scenes",
   "Former 8th Wall partners handling migrations or overflow",
   "Producers who need a senior contractor for a technical sprint",
 ];
 
-export default function AgenciesPage() {
+export default function WhiteLabelPage() {
   return (
     <main>
       <section className="px-5 pb-14 pt-32">
         <span className="bk font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted)]">
-          WebAR for agencies
+          White-label WebAR
         </span>
         <h1 className="mt-4 max-w-[13ch] text-[clamp(40px,9vw,120px)] font-bold uppercase leading-[0.86] tracking-tight">
           Your senior <span className="film-text">WebAR layer</span>
         </h1>
         <p className="mt-6 max-w-[50ch] text-[15px] leading-relaxed text-[var(--muted)]">
-          Shape Reality plugs into your production team as the WebAR engineering
-          layer. You keep the client relationship and the creative direction; we
-          handle camera and tracking architecture, Three.js and WebGL
-          implementation, mobile optimization, deployment, and technical QA.
+          Shape Reality plugs into your team as the WebAR engineering layer —
+          agency, studio, or product team. You keep the client relationship, the
+          credit, and the creative direction; we handle camera and tracking
+          architecture, Three.js and WebGL implementation, mobile optimization,
+          deployment, and technical QA.
         </p>
       </section>
 

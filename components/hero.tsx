@@ -4,38 +4,63 @@ import {
   QrCodeIcon,
   SparklesIcon,
   TrophyIcon,
-} from '@heroicons/react/24/outline'
-import { NewsletterForm } from 'components/newsletter-form'
-import { Leaderboard } from 'components/leaderboard'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Suspense } from 'react'
+} from "@heroicons/react/24/outline";
+import { NewsletterForm } from "components/newsletter-form";
+import { Leaderboard } from "components/leaderboard";
+import Image from "next/image";
+import Link from "next/link";
+import { Suspense } from "react";
 
 const HOW_TO_PLAY = [
-  { n: 1, Icon: ArchiveBoxIcon, verb: 'Receive', desc: 'Get your puzzle and the zine.' },
-  { n: 2, Icon: PuzzlePieceIcon, verb: 'Solve', desc: 'Put the pieces together.' },
-  { n: 3, Icon: QrCodeIcon, verb: 'Verify', desc: 'Scan to verify your completion.' },
-  { n: 4, Icon: SparklesIcon, verb: 'Unlock', desc: 'A hidden experience comes to life.' },
-  { n: 5, Icon: TrophyIcon, verb: 'Compete', desc: 'See your rank on the leaderboard.' },
-]
+  {
+    n: 1,
+    Icon: ArchiveBoxIcon,
+    verb: "Receive",
+    desc: "Get your puzzle and the zine.",
+  },
+  {
+    n: 2,
+    Icon: PuzzlePieceIcon,
+    verb: "Solve",
+    desc: "Put the pieces together.",
+  },
+  {
+    n: 3,
+    Icon: QrCodeIcon,
+    verb: "Verify",
+    desc: "Scan to verify your completion.",
+  },
+  {
+    n: 4,
+    Icon: SparklesIcon,
+    verb: "Unlock",
+    desc: "A hidden experience comes to life.",
+  },
+  {
+    n: 5,
+    Icon: TrophyIcon,
+    verb: "Compete",
+    desc: "See your rank on the leaderboard.",
+  },
+];
 
 export function Hero() {
   return (
     <div className="flex flex-col">
-
       {/* ── HERO ─────────────────────────────────── */}
       <section className="flex min-h-screen flex-col justify-between pt-20">
         <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-12">
-
           {/* Eyebrow — mono label */}
           <p className="font-mono text-[11px] uppercase tracking-widest">
-            <span className="animate-pulse" style={{ color: '#34c759' }}>● New Drop Live</span>
+            <span className="animate-pulse" style={{ color: "#34c759" }}>
+              ● New Drop Live
+            </span>
             <span className="text-black opacity-60 dark:text-white">
               &nbsp;&nbsp;&nbsp;Uncharted
             </span>
           </p>
 
-{/* Headline — Jakarta Sans */}
+          {/* Headline — Jakarta Sans */}
           <h1 className="font-sans text-[clamp(40px,11vw,64px)] font-bold uppercase leading-[0.95] tracking-tight text-black dark:text-white">
             A puzzle made to be played.
           </h1>
@@ -60,7 +85,6 @@ export function Hero() {
               Leaderboard
             </a>
           </div>
-
         </div>
 
         {/* Product image */}
@@ -96,7 +120,9 @@ export function Hero() {
               >
                 <Icon className="mt-0.5 h-5 w-5 flex-shrink-0 text-black opacity-50 dark:text-white" />
                 <p className="font-mono text-[11px] uppercase tracking-widest text-black dark:text-white">
-                  <span className="font-bold">{n}&nbsp;&nbsp;{verb}</span>
+                  <span className="font-bold">
+                    {n}&nbsp;&nbsp;{verb}
+                  </span>
                   <span className="opacity-50">&nbsp;&nbsp;{desc}</span>
                 </p>
               </div>
@@ -105,13 +131,12 @@ export function Hero() {
           <a
             href="/product/uncharted"
             className="mt-6 block text-center font-mono text-[12px] uppercase tracking-widest transition-opacity hover:opacity-70"
-            style={{ color: '#0088ff' }}
+            style={{ color: "#0088ff" }}
           >
             Claim yours now →
           </a>
         </div>
       </section>
-
 
       {/* ── LEADERBOARD ──────────────────────────── */}
       <section
@@ -128,15 +153,18 @@ export function Hero() {
             </span>
           </h2>
 
-          <Suspense fallback={
-            <p className="pt-8 text-center font-mono text-[11px] uppercase tracking-widest text-black opacity-30 dark:text-white">
-              Loading…
-            </p>
-          }>
+          <Suspense
+            fallback={
+              <p className="pt-8 text-center font-mono text-[11px] uppercase tracking-widest text-black opacity-30 dark:text-white">
+                Loading…
+              </p>
+            }
+          >
             <Leaderboard puzzleId="uncharted-launch-2025" />
           </Suspense>
           <p className="mt-6 font-mono text-[10px] uppercase tracking-widest text-black opacity-30 dark:text-white">
-            Original Uncharted Launch Event&nbsp;&nbsp;·&nbsp;&nbsp;April 2025&nbsp;&nbsp;·&nbsp;&nbsp;35 completions
+            Original Uncharted Launch Event&nbsp;&nbsp;·&nbsp;&nbsp;April
+            2025&nbsp;&nbsp;·&nbsp;&nbsp;35 completions
           </p>
         </div>
       </section>
@@ -155,7 +183,6 @@ export function Hero() {
           </div>
         </div>
       </section>
-
     </div>
-  )
+  );
 }

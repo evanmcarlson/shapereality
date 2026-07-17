@@ -1,4 +1,3 @@
-
 import { getMenu } from "lib/shopify";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;

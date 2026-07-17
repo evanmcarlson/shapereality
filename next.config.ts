@@ -1,27 +1,27 @@
 export default {
   async redirects() {
     const domains = [
-      'shapereality.co',
-      'shapereality.net',
-      'shapereality.org',
-      'shapereality.xyz',
-      'weshapereality.com'
-    ]
+      "shapereality.co",
+      "shapereality.net",
+      "shapereality.org",
+      "shapereality.xyz",
+      "weshapereality.com",
+    ];
 
     const rules = domains.flatMap((domain) => [
       {
-        source: '/:path*',
-        has: [{ type: 'host', value: domain }],
-        destination: 'https://shapereality.com/:path*',
+        source: "/:path*",
+        has: [{ type: "host", value: domain }],
+        destination: "https://shapereality.com/:path*",
         permanent: true,
       },
       {
-        source: '/:path*',
-        has: [{ type: 'host', value: `www.${domain}` }],
-        destination: 'https://shapereality.com/:path*',
+        source: "/:path*",
+        has: [{ type: "host", value: `www.${domain}` }],
+        destination: "https://shapereality.com/:path*",
         permanent: true,
       },
-    ])
+    ]);
 
     return [...rules];
   },

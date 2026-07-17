@@ -17,7 +17,7 @@ import { redirect } from "next/navigation";
 
 export async function addItem(
   prevState: any,
-  selectedVariantId: string | undefined
+  selectedVariantId: string | undefined,
 ) {
   if (!selectedVariantId) {
     return "Error adding item to cart";
@@ -40,7 +40,7 @@ export async function removeItem(prevState: any, merchandiseId: string) {
     }
 
     const lineItem = cart.lines.find(
-      (line) => line.merchandise.id === merchandiseId
+      (line) => line.merchandise.id === merchandiseId,
     );
 
     if (lineItem && lineItem.id) {
@@ -59,7 +59,7 @@ export async function updateItemQuantity(
   payload: {
     merchandiseId: string;
     quantity: number;
-  }
+  },
 ) {
   const { merchandiseId, quantity } = payload;
 
@@ -71,7 +71,7 @@ export async function updateItemQuantity(
     }
 
     const lineItem = cart.lines.find(
-      (line) => line.merchandise.id === merchandiseId
+      (line) => line.merchandise.id === merchandiseId,
     );
 
     if (lineItem && lineItem.id) {
@@ -103,7 +103,9 @@ export async function buyNow(selectedVariantId: string | undefined) {
 
   const res = await shopifyFetch<ShopifyCreateCartOperation>({
     query: createCartMutation,
-    variables: { lineItems: [{ merchandiseId: selectedVariantId, quantity: 1 }] },
+    variables: {
+      lineItems: [{ merchandiseId: selectedVariantId, quantity: 1 }],
+    },
   });
 
   const checkoutUrl = res.body.data.cartCreate.cart.checkoutUrl;

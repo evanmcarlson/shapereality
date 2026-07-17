@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 // HeroScene disabled for load performance — all Three.js/lil-gui bundles excluded.
 // To restore: uncomment everything below the stub, remove the stub export, restore
@@ -12,7 +12,9 @@
 // import { pass, renderOutput, uniform } from 'three/tsl'
 // import * as THREE from 'three/webgpu'
 
-export function HeroScene() { return null }
+export function HeroScene() {
+  return null;
+}
 
 // --- Original implementation ---
 //

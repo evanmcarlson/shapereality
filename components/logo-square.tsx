@@ -7,7 +7,11 @@ export default function LogoSquare({ size }: { size?: "sm" | undefined }) {
       alt="Shape Reality"
       width={160}
       height={18}
-      style={{ width: 'auto', height: size === "sm" ? '14px' : '34px', filter: 'invert(var(--logo-invert))' }}
+      style={{
+        width: "auto",
+        height: size === "sm" ? "14px" : "34px",
+        filter: "invert(var(--logo-invert))",
+      }}
     />
   );
 }

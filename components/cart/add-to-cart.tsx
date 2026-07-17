@@ -146,7 +146,6 @@ export function AddToCart({ product }: { product: Product }) {
               },
             ],
           });
-
         }}
       />
       <p aria-live="polite" className="sr-only" role="status">

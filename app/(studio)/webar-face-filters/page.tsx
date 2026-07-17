@@ -3,9 +3,9 @@ import { BriefCta } from "components/studio-site/brief-cta";
 import { ReelVideo } from "components/studio-site/reel-video";
 
 export const metadata: Metadata = {
-  title: "WebAR Face Filters & Accessory AR",
+  title: "WebAR Face Filters — Face, Iris & Ear Tracking",
   description:
-    "Custom browser-based face filters and accessory AR for agencies and brands: face-tracked effects, eyewear and headwear try-on, iris effects, and true ear anchoring for earrings and earbuds.",
+    "Custom browser-based face filters and accessory AR: face-tracked effects, eyewear and headwear try-on, iris tracking, and true ear anchoring for earrings and earbuds. No app download.",
 };
 
 const USE_CASES = [

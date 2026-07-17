@@ -1,44 +1,49 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import { useEffect, useRef } from 'react'
+import Image from "next/image";
+import { useEffect, useRef } from "react";
 
 interface ScrollingBannerProps {
-  src: string
-  alt: string
-  width: number
-  height: number
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
 }
 
-export function ScrollingBanner({ src, alt, width, height }: ScrollingBannerProps) {
-  const rowRef = useRef<HTMLDivElement>(null)
+export function ScrollingBanner({
+  src,
+  alt,
+  width,
+  height,
+}: ScrollingBannerProps) {
+  const rowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const row = rowRef.current
-    if (!row) return
+    const row = rowRef.current;
+    if (!row) return;
 
-    let ticking = false
+    let ticking = false;
     const onScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const offset = -(window.scrollY * 1.5 % window.innerWidth)
-          row.style.transform = `translateX(${offset}px)`
-          ticking = false
-        })
-        ticking = true
+          const offset = -((window.scrollY * 1.5) % window.innerWidth);
+          row.style.transform = `translateX(${offset}px)`;
+          ticking = false;
+        });
+        ticking = true;
       }
-    }
+    };
 
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <div className="w-full overflow-hidden">
       <div
         ref={rowRef}
         className="flex will-change-transform"
-        style={{ width: '200vw' }}
+        style={{ width: "200vw" }}
       >
         <div className="w-screen flex-none">
           <Image
@@ -60,5 +65,5 @@ export function ScrollingBanner({ src, alt, width, height }: ScrollingBannerProp
         </div>
       </div>
     </div>
-  )
+  );
 }

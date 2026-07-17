@@ -15,12 +15,13 @@ electric accent doing all the emotional work. The source gates entry behind a fu
 (centered mark, bracketed captions, a thin cobalt progress bar): the page treats itself as a
 performance that begins deliberately. Generous whitespace, near-zero chrome, no cards, no
 shadows — hierarchy comes from scale contrast and placement, not surfaces. For Shape Reality:
-keep this restraint as the *ground* so the 3D/AR layer (chrome, glass, refraction) is the only
+keep this restraint as the _ground_ so the 3D/AR layer (chrome, glass, refraction) is the only
 "rich" material on the page — UI disappears, the work is the color.
 
 ## 2. Color Palette & Roles
 
 Extracted (CSS variables):
+
 - `--color-black: #000` — primary ink / dark ground
 - `--color-white: #fff` — primary ground / light ink
 - `--color-grey: silver` + neutrals `#D5D5D5`, `#E8E8E8`, `#F4F6FA` — hairlines, muted labels, wash panels
@@ -29,13 +30,14 @@ Extracted (CSS variables):
 
 Roles for Shape Reality: black + white are the brand; neutrals are structure; the accent is a
 SLOT, not a color — one bold pop per context (cobalt `#0012ff`-class blue, or a neon
-green/yellow), never two accents in the same view. The accent marks *live/interactive/AR*
+green/yellow), never two accents in the same view. The accent marks _live/interactive/AR_
 moments only: progress, hover reveals, one hero word, a recording dot. Everything else stays
 achromatic so video/3D content reads as the color.
 
 ## 3. Typography Rules
 
 Extracted:
+
 - Body/display: self-hosted **Helvetica** woff2, weights 400/700 (weight vars 300–700 defined).
 - Secondary display face: **Nautica** (`--font-secondary`) — a single expressive face used sparingly.
 - **Fluid viewport type** in `svw` units — the scale IS the layout:
@@ -54,7 +56,7 @@ tracked slightly. Never mid-size headlines — the system is extremes or nothing
 
 - **Bracketed labels** (`.with-brackets`): `[ ` and ` ]` pseudo-elements around small caps
   labels, with a `--x-translate` var animating bracket spread. Use for meta labels: `[ REALITY
-  ENGINE ]`, `[ BODY-TRACKED ]`, `[ EST. SF ]`-class captions.
+ENGINE ]`, `[ BODY-TRACKED ]`, `[ EST. SF ]`-class captions.
 - **Growing underline** (`.pseudo-underline`): 1px bottom border animating `width: 0% → 100%`
   via `--border-width` — the hover language for nav/links. Quiet, no color change needed.
 - **Radii**: mostly square (0); pills at `28px/50px/80px` for buttons/chips; `50%` for dots.
@@ -108,6 +110,7 @@ uppercase, labels ~0.9–1.2svw caps in `[ brackets ]`, 20px outer frame, underl
 flat UI + refractive 3D content only.
 
 Example prompts:
+
 - "Hero: white ground, SHAPE REALITY stacked at 14svw, leading 0.8, uppercase; behind the
   wordmark a portrait video slab of the Crystal filter; caption `[ BODY-TRACKED WEBAR ]` top-left;
   one cobalt underline-grow link 'START A PROJECT' bottom-right; 20px frame throughout."

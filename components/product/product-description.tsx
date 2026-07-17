@@ -1,7 +1,12 @@
 import { AddToCart } from "components/cart/add-to-cart";
 import { ViewItemTracker } from "components/analytics/view-item-tracker";
 import { PaymentBadges } from "components/product/payment-badges";
-import { EyeIcon, PuzzlePieceIcon, TruckIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  PuzzlePieceIcon,
+  TruckIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 import Price from "components/price";
 import Prose from "components/prose";
 import { Product } from "lib/shopify/types";
@@ -28,12 +33,15 @@ export function ProductDescription({ product }: { product: Product }) {
       ) : null}
       <div className="mb-12 mt-12 grid grid-cols-4 gap-2">
         {[
-          { Icon: UserIcon, label: 'Solo\nChallenge' },
-          { Icon: PuzzlePieceIcon, label: '120\nPieces' },
-          { Icon: TruckIcon, label: 'Free\nShipping' },
-          { Icon: EyeIcon, label: 'Hidden\nExperience' },
+          { Icon: UserIcon, label: "Solo\nChallenge" },
+          { Icon: PuzzlePieceIcon, label: "120\nPieces" },
+          { Icon: TruckIcon, label: "Free\nShipping" },
+          { Icon: EyeIcon, label: "Hidden\nExperience" },
         ].map(({ Icon, label }) => (
-          <div key={label} className="flex flex-col items-center gap-2 text-center">
+          <div
+            key={label}
+            className="flex flex-col items-center gap-2 text-center"
+          >
             <Icon className="h-5 w-5 opacity-60" />
             <span className="whitespace-pre-line font-mono text-[8px] uppercase leading-tight tracking-widest opacity-40">
               {label}
